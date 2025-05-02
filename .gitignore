@@ -1,0 +1,22 @@
+# STM32Cube auto-generated files
+*.launch
+*.bin
+*.elf
+*.hex
+*.log
+*.map
+*.ld
+
+# Build folder
+Drivers/
+Debug/
+/Release/
+build/
+*.o
+*.d
+
+# IDE-specific
+.project
+.cproject
+.mxproject
+.settings/
