@@ -53,11 +53,7 @@ Plans for future:
 🎥Gifs and Videos of the current state
 
 https://www.youtube.com/watch?v=mqlZMSorcHI
-➤
-➤
-➤
-➤
-📌 Snake Game & Main Menu Gifs
+
 
 
 
@@ -65,11 +61,8 @@ https://github.com/user-attachments/assets/cf425ddc-7228-4562-bc1a-44484f2e8309
 
 
 
-https://github.com/user-attachments/assets/9b9f870b-21a2-4e57-8e17-fdb2bccb818f
-
-
-
 https://github.com/user-attachments/assets/867031f0-c9e2-407a-be16-ab84aabc0807
 
 
 
+https://github.com/user-attachments/assets/9b9f870b-21a2-4e57-8e17-fdb2bccb818f
