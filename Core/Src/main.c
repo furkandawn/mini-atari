@@ -25,13 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ssd1306.h"
-#include "ssd1306_fonts.h"
-#include "Joystick.h"
 #include "game_menu.h"
-#include "game_level.h"
-#include "game_start.h"
-#include "game_over.h"
-#include "game_leaderboard.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

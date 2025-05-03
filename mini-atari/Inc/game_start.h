@@ -8,8 +8,6 @@
 #ifndef INC_GAME_START_H_
 #define INC_GAME_START_H_
 
-#define COUNTDOWN 3
-
-void game_start(void);
+void game_init(void);
 
 #endif /* INC_GAME_START_H_ */

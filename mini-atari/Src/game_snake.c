@@ -9,10 +9,10 @@
 #include "game_snake.h"
 #include <stdlib.h> // needed for rand() function
 #include "ssd1306.h"
-#include "game_menu.h"
+#include "menu_logic.h"
 #include "game_start.h"
-#include "game_over.h"
 #include "game_level.h"
+#include "menu_paused.h"
 
 static void snake_move(game_snake_t *game);
 static void snake_spawn_food(game_snake_t *game);
@@ -22,7 +22,6 @@ static void snake_draw(const game_snake_t *game);
 
 void snake_game(game_snake_t *game)
 {
-	game_start();
 	snake_init(game);
 	while(!game->game_over && current_menu_state == MENU_PLAYING)
 	{
@@ -30,7 +29,8 @@ void snake_game(game_snake_t *game)
 		snake_update(game);
 		snake_draw(game);
 	}
-	game_over_draw_animated();
+	HAL_Delay(1000);
+	current_menu_state = MENU_GAMEOVER;
 }
 
 static void snake_init(game_snake_t *game)
@@ -50,7 +50,7 @@ static void snake_init(game_snake_t *game)
 
 static void snake_update(game_snake_t *game)
 {
-	if (joystick_is_pressed()) pause_game();
+	if (joystick_is_pressed()) game_pause();
 	if (game->game_over || current_menu_state != MENU_PLAYING) return;
 
 	snake_move(game);

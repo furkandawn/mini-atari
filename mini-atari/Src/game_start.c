@@ -8,17 +8,27 @@
 
 #include "game_start.h"
 
+#define COUNTDOWN 3
+
+// includes start
 // include ssd1306 OLED Display
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
 
 #include <stdio.h>
 #include "game_level.h"
+#include "menu_main.h"
+#include "menu_gameover.h"
 
+// include games
+#include "game_snake.h"
 
-void game_start(void)
+// includes end
+
+static void game_start(void)
 {
 	game_level_reset();
+	animation_shown = false;
 
 	ssd1306_Fill(Black);
 	ssd1306_UpdateScreen();
@@ -33,5 +43,40 @@ void game_start(void)
 		ssd1306_UpdateScreen();
 		ssd1306_Fill(Black);
 		HAL_Delay(500);
+	}
+}
+
+void game_init(void)
+{
+	game_start();
+
+	switch(current_menu_main_item)
+	{
+	case GAME_SNAKE:
+	{
+		game_snake_t game;
+		snake_game(&game);
+		break;
+	}
+	case GAME_2:
+	{
+		break;
+	}
+	case GAME_3:
+	{
+		break;
+	}
+	case GAME_4:
+	{
+		break;
+	}
+	case GAME_5:
+	{
+		break;
+	}
+	default:
+	{
+		break;
+	}
 	}
 }
