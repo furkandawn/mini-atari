@@ -15,9 +15,9 @@
 
 // includes end
 
-menu_state_t current_menu_state = MENU_MAIN;
+menu_state_t current_menu_state = MENU_SAVE;
 
-void navigate_menu_up_down(uint8_t *index, uint8_t maxItems, void (*draw_func)(uint8_t))
+void navigate_menu_up_down(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
 
 	joystick_direction_t direction = joystick_direction();
@@ -27,7 +27,7 @@ void navigate_menu_up_down(uint8_t *index, uint8_t maxItems, void (*draw_func)(u
 		(*index)--;
 		HAL_Delay(100);
 	}
-	else if (direction == DIRECTION_DOWN && *index < maxItems - 1)
+	else if (direction == DIRECTION_DOWN && *index < max_items - 1)
 	{
 		(*index)++;
 		HAL_Delay(100);
@@ -36,7 +36,7 @@ void navigate_menu_up_down(uint8_t *index, uint8_t maxItems, void (*draw_func)(u
 	draw_func(*index);
 }
 
-void navigate_menu_right_left(uint8_t *index, uint8_t maxItems, void (*draw_func)(uint8_t))
+void navigate_menu_right_left(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
 
 	joystick_direction_t direction = joystick_direction();
@@ -46,7 +46,7 @@ void navigate_menu_right_left(uint8_t *index, uint8_t maxItems, void (*draw_func
 		(*index)--;
 		HAL_Delay(100);
 	}
-	else if (direction == DIRECTION_RIGHT && *index < maxItems - 1)
+	else if (direction == DIRECTION_RIGHT && *index < max_items - 1)
 	{
 		(*index)++;
 		HAL_Delay(100);
@@ -63,38 +63,38 @@ void navigate_menu_right_left(uint8_t *index, uint8_t maxItems, void (*draw_func
  * Jump to the first element from last
  * or jump to the last element from first
  */
-void navigate_menu_up_down_loop(uint8_t *index, uint8_t maxItems, void (*draw_func)(uint8_t))
+void navigate_menu_up_down_loop(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
 
 	joystick_direction_t direction = joystick_direction();
 
 	if (direction == DIRECTION_UP)
 	{
-		*index = (*index + maxItems - 1) % maxItems;
+		*index = (*index + max_items - 1) % max_items;
 		HAL_Delay(100);
 	}
 	else if (direction == DIRECTION_DOWN)
 	{
-		*index = (*index + 1) % maxItems;
+		*index = (*index + 1) % max_items;
 		HAL_Delay(100);
 	}
 
 	draw_func(*index);
 }
 
-void navigate_menu_right_left_loop(uint8_t *index, uint8_t maxItems, void (*draw_func)(uint8_t))
+void navigate_menu_right_left_loop(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
 
 	joystick_direction_t direction = joystick_direction();
 
 	if (direction == DIRECTION_LEFT)
 	{
-		*index = (*index + maxItems - 1) % maxItems;
+		*index = (*index + max_items - 1) % max_items;
 		HAL_Delay(100);
 	}
 	else if (direction == DIRECTION_RIGHT)
 	{
-		*index = (*index + 1) % maxItems;
+		*index = (*index + 1) % max_items;
 		HAL_Delay(100);
 	}
 

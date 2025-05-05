@@ -12,15 +12,19 @@
 // include ssd1306 OLED Display
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
+#include "oled_utils.h"
 
 #include "joystick.h"
 #include "menu_logic.h"
+#include "game_level.h"
+#include "menu_leaderboard.h"
+#include "oled_utils.h"
 
-#include "stdbool.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
 // includes end
-
-#define MAX_NAME_LENGTH 11
 
 typedef enum
 {
@@ -34,9 +38,9 @@ static const char *menu_save_items[] =
 		"Exit"
 };
 
-static char menu_save_inserted_name[MAX_NAME_LENGTH] =
+char menu_save_inserted_name[MAX_NAME_LENGTH] =
 {
-		""
+		'\0'
 };
 
 static char *menu_save_inserted_letter = menu_save_inserted_name;
@@ -50,41 +54,23 @@ static void draw_menu_save_actions(uint8_t current_menu_save_action)
 {
 	ssd1306_Fill(Black);
 
-	for (uint8_t i = 0; i < SAVE_COUNT; i++)
-	{
-		if (i == current_menu_save_action)  // Highlight selected item
-		{
-			ssd1306_SetCursor(16 + (i * 48), 47);
-			ssd1306_WriteString("V", Font_6x8, White);
-			ssd1306_FillRectangle(4 + (i * 48), 62, 28 + (i * 48), 63, White);
-		}
-
-		ssd1306_SetCursor(4 + (i * 48), 55);
-		ssd1306_WriteString(menu_save_items[i], Font_6x8, White);
-	}
+	char menu_buffer[32];
+	join_menu_items(menu_save_items, SAVE_COUNT, menu_buffer, sizeof(menu_buffer));
+	oled_draw_h_highlight(menu_buffer, Font_6x8, 55, White, &current_menu_save_action, SAVE_COUNT);
 
 	// draw the upper side without functionality
+	ssd1306_DrawRectangle(14, 0, 114, 18, White);
+	oled_draw_h_centered(menu_save_inserted_name, Font_7x10, 5, White);
 
 	char left = ((current_menu_save_letter + ALPHABET_COUNT - 1) % ALPHABET_COUNT)  + 'A';
 	char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
 	char right = ((current_menu_save_letter + 1) % ALPHABET_COUNT)  + 'A';
 
-	ssd1306_DrawRectangle(14, 0, 114, 18, White);
-	ssd1306_SetCursor(29, 5);
-	ssd1306_WriteString(menu_save_inserted_name, Font_7x10, White);
-
-	ssd1306_SetCursor(49, 30);
-	ssd1306_WriteString("<", Font_6x8, White);
-	ssd1306_SetCursor(81, 30);
-	ssd1306_WriteString(">", Font_6x8, White);
-
-	ssd1306_SetCursor(28, 28);
-	ssd1306_WriteChar(left, Font_6x8, White);
-	ssd1306_SetCursor(60, 25);
-	ssd1306_WriteChar(mid, Font_16x24, White);
-	ssd1306_SetCursor(101, 28);
-	ssd1306_WriteChar(right, Font_6x8, White);
-
+	char buffer[32];
+	char mid_buffer[2] = { mid, '\0'};
+	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
+	oled_draw_h_centered(buffer, Font_6x8, 32, White);
+	oled_draw_h_centered(mid_buffer, Font_16x24, 25, White);
 	// end of drawing upper side
 
 	ssd1306_UpdateScreen(); // Refresh OLED screen
@@ -95,32 +81,21 @@ static void draw_menu_save_alphabet(uint8_t current_menu_save_letter)
 	ssd1306_Fill(Black);
 
 	ssd1306_DrawRectangle(14, 0, 114, 18, White);
-	ssd1306_SetCursor(29, 5);
-	ssd1306_WriteString(menu_save_inserted_name, Font_7x10, White);
-
-	ssd1306_SetCursor(49, 30);
-	ssd1306_WriteString("<", Font_6x8, White);
-	ssd1306_SetCursor(81, 30);
-	ssd1306_WriteString(">", Font_6x8, White);
+	oled_draw_h_centered(menu_save_inserted_name, Font_7x10, 5, White);
 
 	char left = ((current_menu_save_letter + ALPHABET_COUNT - 1) % ALPHABET_COUNT)  + 'A';
 	char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
 	char right = ((current_menu_save_letter + 1) % ALPHABET_COUNT)  + 'A';
-	ssd1306_SetCursor(28, 28);
-	ssd1306_WriteChar(left, Font_6x8, White);
-	ssd1306_SetCursor(60, 25);
-	ssd1306_WriteChar(mid, Font_16x24, White);
-	ssd1306_SetCursor(101, 28);
-	ssd1306_WriteChar(right, Font_6x8, White);
+	char buffer[32];
+	char mid_buffer[2] = { mid, '\0'};
+	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
+	oled_draw_h_centered(buffer, Font_6x8, 32, White);
+	oled_draw_h_centered(mid_buffer, Font_16x24, 25, White);
 
 	// draw bottom side without functionality
-	ssd1306_SetCursor(4 + (0 * 48), 55);
-	ssd1306_WriteString(menu_save_items[0], Font_6x8, White);
-	ssd1306_SetCursor(4 + (1 * 48), 55);
-	ssd1306_WriteString(menu_save_items[1], Font_6x8, White);
-	ssd1306_SetCursor(4 + (2 * 48), 55);
-	ssd1306_WriteString(menu_save_items[2], Font_6x8, White);
-
+	char menu_buffer[32];
+	join_menu_items(menu_save_items, SAVE_COUNT, menu_buffer, sizeof(menu_buffer));
+	oled_draw_h_section(menu_buffer, Font_6x8, 55, White, SAVE_COUNT);
 	// end of drawing bottom side
 
 	ssd1306_UpdateScreen(); // Refresh OLED screen
@@ -144,16 +119,13 @@ static void navigate_menu_save_alphabet(void)
 
 static void handle_selected_letter_input(void)
 {
-	if (joystick_is_pressed()) // check if we pressed the button on a selected letter
+	if ((menu_save_inserted_letter - menu_save_inserted_name) < MAX_NAME_LENGTH - 1) // avoid overflow
 	{
-		if ((menu_save_inserted_letter - menu_save_inserted_name) < MAX_NAME_LENGTH - 1) // avoid overflow
-		{
-			char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
-			*menu_save_inserted_letter = mid; // pointer & array arithmetics
-			menu_save_inserted_letter++;
-			*menu_save_inserted_letter = '\0'; // last character MUST be null
-			ssd1306_UpdateScreen();
-		}
+		char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
+		*menu_save_inserted_letter = mid; // pointer & array arithmetics
+		menu_save_inserted_letter++;
+		*menu_save_inserted_letter = '\0'; // last character MUST be null
+		ssd1306_UpdateScreen();
 	}
 }
 
