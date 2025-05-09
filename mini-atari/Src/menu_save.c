@@ -38,12 +38,12 @@ static const char *menu_save_items[] =
 		"Exit"
 };
 
-char menu_save_inserted_name[MAX_NAME_LENGTH] =
+char current_menu_save_name[MAX_NAME_LENGTH] =
 {
 		'\0'
 };
 
-static char *menu_save_inserted_letter = menu_save_inserted_name;
+static char *current_letter_ptr = current_menu_save_name;
 
 static menu_save_alphabet_t current_menu_save_letter = A;
 static menu_save_action_t current_menu_save_action = SAVE_BKSP;
@@ -54,23 +54,22 @@ static void draw_menu_save_actions(uint8_t current_menu_save_action)
 {
 	ssd1306_Fill(Black);
 
-	char menu_buffer[32];
-	join_menu_items(menu_save_items, SAVE_COUNT, menu_buffer, sizeof(menu_buffer));
-	oled_draw_h_highlight(menu_buffer, Font_6x8, 55, White, &current_menu_save_action, SAVE_COUNT);
+	oled_draw_horizontal_menu(menu_save_items, Font_6x8, 55, White, &current_menu_save_action, SAVE_COUNT);
 
-	// draw the upper side without functionality
+	// draw the upper side
 	ssd1306_DrawRectangle(14, 0, 114, 18, White);
-	oled_draw_h_centered(menu_save_inserted_name, Font_7x10, 5, White);
+	oled_draw_horizontal_string(current_menu_save_name, Font_7x10, 5, White);
 
 	char left = ((current_menu_save_letter + ALPHABET_COUNT - 1) % ALPHABET_COUNT)  + 'A';
 	char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
 	char right = ((current_menu_save_letter + 1) % ALPHABET_COUNT)  + 'A';
 
 	char buffer[32];
-	char mid_buffer[2] = { mid, '\0'};
 	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
-	oled_draw_h_centered(buffer, Font_6x8, 32, White);
-	oled_draw_h_centered(mid_buffer, Font_16x24, 25, White);
+	oled_draw_horizontal_string(buffer, Font_6x8, 32, White);
+
+	char mid_buffer[2] = { mid, '\0'};
+	oled_draw_horizontal_string(mid_buffer, Font_16x24, 25, White);
 	// end of drawing upper side
 
 	ssd1306_UpdateScreen(); // Refresh OLED screen
@@ -81,21 +80,21 @@ static void draw_menu_save_alphabet(uint8_t current_menu_save_letter)
 	ssd1306_Fill(Black);
 
 	ssd1306_DrawRectangle(14, 0, 114, 18, White);
-	oled_draw_h_centered(menu_save_inserted_name, Font_7x10, 5, White);
+	oled_draw_horizontal_string(current_menu_save_name, Font_7x10, 5, White);
 
 	char left = ((current_menu_save_letter + ALPHABET_COUNT - 1) % ALPHABET_COUNT)  + 'A';
 	char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
 	char right = ((current_menu_save_letter + 1) % ALPHABET_COUNT)  + 'A';
-	char buffer[32];
-	char mid_buffer[2] = { mid, '\0'};
-	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
-	oled_draw_h_centered(buffer, Font_6x8, 32, White);
-	oled_draw_h_centered(mid_buffer, Font_16x24, 25, White);
 
-	// draw bottom side without functionality
-	char menu_buffer[32];
-	join_menu_items(menu_save_items, SAVE_COUNT, menu_buffer, sizeof(menu_buffer));
-	oled_draw_h_section(menu_buffer, Font_6x8, 55, White, SAVE_COUNT);
+	char buffer[32];
+	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
+	oled_draw_horizontal_string(buffer, Font_6x8, 32, White);
+
+	char mid_buffer[2] = { mid, '\0'};
+	oled_draw_horizontal_string(mid_buffer, Font_16x24, 25, White);
+
+	// draw bottom side
+	oled_draw_horizontal_menu(menu_save_items, Font_6x8, 55, White, &avoid_highlight, SAVE_COUNT);
 	// end of drawing bottom side
 
 	ssd1306_UpdateScreen(); // Refresh OLED screen
@@ -119,22 +118,22 @@ static void navigate_menu_save_alphabet(void)
 
 static void handle_selected_letter_input(void)
 {
-	if ((menu_save_inserted_letter - menu_save_inserted_name) < MAX_NAME_LENGTH - 1) // avoid overflow
+	if ((current_letter_ptr - current_menu_save_name) < MAX_NAME_LENGTH - 1) // avoid overflow
 	{
 		char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
-		*menu_save_inserted_letter = mid; // pointer & array arithmetics
-		menu_save_inserted_letter++;
-		*menu_save_inserted_letter = '\0'; // last character MUST be null
+		*current_letter_ptr = mid; // pointer & array arithmetics
+		current_letter_ptr++;
+		*current_letter_ptr = '\0'; // last character MUST be null
 		ssd1306_UpdateScreen();
 	}
 }
 
 static void handle_menu_save_bksp(void) // bksp stands for backspace
 {
-	if (menu_save_inserted_letter > menu_save_inserted_name) // check if we have a letter to delete and not smt else
+	if (current_letter_ptr > current_menu_save_name) // check if we have a letter to delete and not smt else
 	{
-		menu_save_inserted_letter--;
-		*menu_save_inserted_letter = '\0'; // last character MUST be null
+		current_letter_ptr--;
+		*current_letter_ptr = '\0'; // last character MUST be null
 		ssd1306_UpdateScreen();
 	}
 }

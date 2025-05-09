@@ -13,6 +13,7 @@
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
 
+#include "oled_utils.h"
 #include "joystick.h"
 #include "menu_logic.h"
 #include <stdint.h>
@@ -35,24 +36,9 @@ static void draw_menu_main(uint8_t current_game_type)
 	ssd1306_Fill(Black); // Clear the OLED display
 
     // Display game list
-	ssd1306_SetCursor(0, 0);
-	ssd1306_WriteString(">>> GAME MENU <<<", Font_7x10, White);
+	oled_draw_horizontal_string(">>> GAME MENU <<<", Font_7x10, 0, White);
 
-    for (uint8_t i = 0; i < GAME_COUNT; i++)
-    {
-        if (i == current_game_type)
-        { // Highlight selected game
-            ssd1306_SetCursor(0, (i * 10) + 15);
-            ssd1306_WriteString("->", Font_6x8, White);
-            ssd1306_SetCursor(20, (i * 10) + 15);
-        }
-        else
-        {
-            ssd1306_SetCursor(30, (i * 10) + 15);
-        }
-
-        ssd1306_WriteString(menu_main_items[i], Font_6x8, White);
-    }
+	oled_draw_vertical_menu(menu_main_items, Font_6x8, 15, White, &current_game_type, GAME_COUNT);
 
     ssd1306_UpdateScreen();  // Refresh OLED screen
 }

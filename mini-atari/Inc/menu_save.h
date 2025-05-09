@@ -20,7 +20,7 @@ typedef enum
 	SAVE_COUNT
 } menu_save_action_t;
 
-extern char menu_save_inserted_name[MAX_NAME_LENGTH];
+extern char current_menu_save_name[MAX_NAME_LENGTH];
 
 char get_saved_name(void);
 void handle_menu_save(void);

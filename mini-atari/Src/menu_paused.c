@@ -13,6 +13,7 @@
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
 
+#include "oled_utils.h"
 #include "joystick.h"
 #include "menu_logic.h"
 #include <stdint.h>
@@ -27,25 +28,15 @@ static const char *menu_paused_items[PAUSED_COUNT] =
 
 static menu_paused_action_t current_menu_paused_action = PAUSED_CONTINUE;
 
+
+// Draw functions of Pause Menu
+
 static void draw_menu_paused(uint8_t current_menu_paused_action)
 {
 	ssd1306_Fill(Black); // Clear the OLED display
 
-	ssd1306_SetCursor(16, 5);
-	ssd1306_WriteString("PAUSED", Font_16x24, White);
-
-	for (uint8_t i = 0; i < PAUSED_COUNT; i++)
-	{
-		if (i == current_menu_paused_action)
-		{ // Highlight "Continue - Exit"
-			ssd1306_SetCursor(33 + (i * 68), 30);
-			ssd1306_WriteString("|", Font_6x8, White);
-			ssd1306_SetCursor(33 + (i * 68), 38);
-			ssd1306_WriteString("V", Font_6x8, White);
-		}
-		ssd1306_SetCursor(10 + ( i * 80), 50);
-		ssd1306_WriteString(menu_paused_items[i], Font_6x8, White);
-	}
+	oled_draw_horizontal_string("PAUSED", Font_16x24, 5, White);
+	oled_draw_horizontal_menu(menu_paused_items, Font_7x10, 50, White, &current_menu_paused_action, PAUSED_COUNT);
 
 	ssd1306_UpdateScreen(); // Refresh screen
 }
@@ -54,6 +45,9 @@ static void navigate_menu_paused(void)
 {
 	navigate_menu_right_left(&current_menu_paused_action, PAUSED_COUNT, draw_menu_paused);
 }
+
+
+// Logic handlers of pause menu
 
 static void handle_current_menu_paused_action(void)
 {

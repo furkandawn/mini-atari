@@ -13,6 +13,7 @@
 #include "ssd1306.h"
 #include "ssd1306_fonts.h"
 
+#include "oled_utils.h"
 #include "joystick.h"
 #include "menu_main.h"
 #include "menu_logic.h"
@@ -32,31 +33,20 @@ static const char *menu_selected_items[ACTION_COUNT] =
 
 menu_selected_action_t current_menu_selected_action = ACTION_START;
 
+
+// Draw functions of selected menu
+
 static void menu_selected_draw(uint8_t current_menu_selected_action)
 {
 	ssd1306_Fill(Black); // Clear the OLED display
 
-	// Display action list
+	// Display game name
 	char buffer[32];
-	snprintf(buffer, sizeof(buffer), ">>> %s <<<", menu_main_items[current_menu_main_item]);
-	ssd1306_SetCursor(0, 0);
-	ssd1306_WriteString(buffer, Font_7x10, White);
+	snprintf(buffer, sizeof(buffer), ">_> %s <_<", menu_main_items[current_menu_main_item]);
+	oled_draw_horizontal_string(buffer, Font_7x10, 0, White);
 
-    for (uint8_t i = 0; i < ACTION_COUNT; i++)
-    {
-        if (i == current_menu_selected_action)
-        { // Highlight selected item
-            ssd1306_SetCursor(0, (i * 10) + 15);
-            ssd1306_WriteString("->", Font_6x8, White);
-            ssd1306_SetCursor(20, (i * 10) + 15);
-        }
-        else
-        {
-        	ssd1306_SetCursor(30, (i * 10) + 15);
-        }
-
-        ssd1306_WriteString(menu_selected_items[i], Font_6x8, White);
-    }
+	// Display actions
+	oled_draw_vertical_menu(menu_selected_items, Font_7x10, 20, White, &current_menu_selected_action, ACTION_COUNT);
 
     ssd1306_UpdateScreen(); // Refresh OLED screen
 }
@@ -65,6 +55,9 @@ static void navigate_menu_selected(void)
 {
 	navigate_menu_up_down(&current_menu_selected_action, ACTION_COUNT, menu_selected_draw);
 }
+
+
+// Logic handlers of selected menu
 
 static void handle_current_menu_selected_action(void)
 {

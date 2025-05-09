@@ -21,9 +21,11 @@
 #define SSD1306_HEIGHT     64
 #endif
 
-void join_menu_items(const char* items[], uint8_t item_count, char* output_buffer, size_t buffer_size);
-void oled_draw_h_centered(const char* str, SSD1306_Font_t Font, uint8_t y, SSD1306_COLOR color);
-void oled_draw_h_section(const char* str, SSD1306_Font_t Font, uint8_t y, SSD1306_COLOR color, uint8_t max_items);
-void oled_draw_h_highlight(const char* str, SSD1306_Font_t Font, uint8_t y, SSD1306_COLOR color, uint8_t *current_index, uint8_t max_items);
+extern uint8_t avoid_highlight; // insert this into *current_index to avoid highlighting
+
+void oled_draw_horizontal_string(char* str, SSD1306_Font_t Font, uint8_t y, SSD1306_COLOR color);
+void oled_draw_horizontal_menu(const char* items[], SSD1306_Font_t Font, uint8_t y, SSD1306_COLOR color, uint8_t *current_index, uint8_t item_count);
+void oled_draw_vertical_menu(const char* items[], SSD1306_Font_t Font, uint8_t start_y,SSD1306_COLOR color, uint8_t *current_index, uint8_t item_count);
+
 
 #endif /* INC_OLED_UTILS_H_ */

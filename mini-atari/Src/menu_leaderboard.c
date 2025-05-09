@@ -28,7 +28,7 @@ leaderboard_entry_t leaderboard[LEADERBOARD_TOP_COUNT] =
 		{"Second", 0},
 		{"Third", 0}
 };
-
+/*
 static void draw_menu_leaderboard(void)
 {
 	ssd1306_Fill(Black);
@@ -52,6 +52,7 @@ static void draw_menu_leaderboard(void)
 
 static void set_leaderboard(uint8_t index)
 {
-	strncpy(leaderboard[index].name, menu_save_inserted_name, sizeof(leaderboard[index].name));
-	leaderboard[index].score = game_get_score();
+	strncpy(leaderboard[index].name, current_menu_save_name, sizeof(leaderboard[index].name));
+	// leaderboard[index].score
 }
+*/
