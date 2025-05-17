@@ -39,7 +39,7 @@ static uint16_t frozen_time = 0;
 
 // extern game_type_t current_game_type; // to do : make every game their own delay system
 
-void game_level_reset(void)
+void game_reset(void)
 {
 	current_score = 0;
 	current_level = 1;

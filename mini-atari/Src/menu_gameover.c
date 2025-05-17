@@ -119,6 +119,7 @@ static void handle_current_menu_gameover_action(void)
 
 void handle_menu_gameover(void)
 {
+	game_get_time_spent();
 	if (!animation_shown)
 	{
 		draw_animated_menu_gameover();

@@ -18,7 +18,7 @@ typedef struct
 	uint8_t minimum_delay;
 } game_score_t;
 
-void game_level_reset(void);
+void game_reset(void);
 void game_increase_score(void);
 uint16_t game_get_score(void);
 uint8_t game_get_level(void);

@@ -28,7 +28,7 @@
 
 #define COUNTDOWN 3
 
-static void game_start(void)
+static void game_draw_start(void)
 {
 	oled_clear();
 	oled_update();
@@ -48,12 +48,12 @@ static void game_start(void)
 	}
 
 	animation_shown = false;
-	game_level_reset();
 }
 
 void game_init(void)
 {
-	game_start();
+	game_draw_start();
+	game_reset();
 
 	switch(current_game_type)
 	{
