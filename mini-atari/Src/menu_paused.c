@@ -8,17 +8,19 @@
 
 #include "menu_paused.h"
 
-// includes start
-// include ssd1306 OLED Display
-#include "ssd1306.h"
-#include "ssd1306_fonts.h"
+// ----->> includes start
 
+// include OLED Display library
 #include "oled_utils.h"
+
+// include mini-atari libraries
 #include "joystick.h"
 #include "menu_logic.h"
+
+// include other
 #include <stdint.h>
 
-// includes end
+// includes end <<-----
 
 static const char *menu_paused_items[PAUSED_COUNT] =
 {
@@ -33,12 +35,12 @@ static menu_paused_action_t current_menu_paused_action = PAUSED_CONTINUE;
 
 static void draw_menu_paused(uint8_t current_menu_paused_action)
 {
-	ssd1306_Fill(Black); // Clear the OLED display
+	oled_clear(); // Clear the OLED display
 
-	oled_draw_horizontal_string("PAUSED", Font_16x24, 5, White);
-	oled_draw_horizontal_menu(menu_paused_items, Font_7x10, 50, White, &current_menu_paused_action, PAUSED_COUNT);
+	oled_write_horizontal_string("PAUSED", oled_font_16x24, 5, oled_color_white);
+	oled_draw_horizontal_menu(menu_paused_items, oled_font_7x10, 50, oled_color_white, &current_menu_paused_action, PAUSED_COUNT);
 
-	ssd1306_UpdateScreen(); // Refresh screen
+	oled_update(); // Refresh screen
 }
 
 static void navigate_menu_paused(void)

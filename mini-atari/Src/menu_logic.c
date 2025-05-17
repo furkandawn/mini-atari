@@ -8,18 +8,28 @@
 
 #include "menu_logic.h"
 
-// includes start
+// ----->> includes start
 
-#include <stdint.h>
+// include OLED Display library
+
+
+// include mini-atari libraries
 #include "joystick.h"
 
-// includes end
+// include other
+#include "stm32f0xx_hal.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-menu_state_t current_menu_state = MENU_SAVE;
+// includes end <<-----
 
+menu_state_t current_menu_state = MENU_MAIN;
+
+/*
+ *    Navigate functions without loop
+ */
 void navigate_menu_up_down(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
-
 	joystick_direction_t direction = joystick_direction();
 
 	if (direction == DIRECTION_UP && *index != 0)
@@ -38,7 +48,6 @@ void navigate_menu_up_down(uint8_t *index, uint8_t max_items, void (*draw_func)(
 
 void navigate_menu_right_left(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
-
 	joystick_direction_t direction = joystick_direction();
 
 	if (direction == DIRECTION_LEFT && *index != 0)
@@ -56,7 +65,6 @@ void navigate_menu_right_left(uint8_t *index, uint8_t max_items, void (*draw_fun
 }
 
 
-
 /*
  * looped versions of navigate functions
  * Either
@@ -65,7 +73,6 @@ void navigate_menu_right_left(uint8_t *index, uint8_t max_items, void (*draw_fun
  */
 void navigate_menu_up_down_loop(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
-
 	joystick_direction_t direction = joystick_direction();
 
 	if (direction == DIRECTION_UP)
@@ -84,7 +91,6 @@ void navigate_menu_up_down_loop(uint8_t *index, uint8_t max_items, void (*draw_f
 
 void navigate_menu_right_left_loop(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t))
 {
-
 	joystick_direction_t direction = joystick_direction();
 
 	if (direction == DIRECTION_LEFT)

@@ -10,14 +10,14 @@
 
 #include <stdint.h>
 
+#define SAVE_COUNT 3 // enum count
 #define MAX_NAME_LENGTH 11
 
 typedef enum
 {
 	SAVE_SAVE = 0,
 	SAVE_BKSP,
-	SAVE_EXIT,
-	SAVE_COUNT
+	SAVE_EXIT
 } menu_save_action_t;
 
 extern char current_menu_save_name[MAX_NAME_LENGTH];

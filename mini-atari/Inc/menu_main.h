@@ -8,17 +8,20 @@
 #ifndef INC_MENU_MAIN_H_
 #define INC_MENU_MAIN_H_
 
+#ifndef GAME_COUNT
+#define GAME_COUNT 5
+#endif
+
 typedef enum
 {
 	GAME_SNAKE = 0,
-	GAME_2,
+	GAME_TETRIS,
 	GAME_3,
 	GAME_4,
 	GAME_5,
-	GAME_COUNT,
-} menu_main_item_t;
+} game_type_t;
 
-extern menu_main_item_t current_menu_main_item;
+extern game_type_t current_game_type;
 extern const char *menu_main_items[GAME_COUNT];
 
 void handle_menu_main(void);

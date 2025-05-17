@@ -24,8 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ssd1306.h"
-#include "game_menu.h"
+#include "game_main.h"
+#include "oled_utils.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,14 +92,14 @@ int main(void)
   MX_ADC_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  ssd1306_Init(); // Initialize ssd1306 0.96' OLED
+  oled_init(); // Initialize ssd1306 0.96' OLED
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  game_menu();
+	  game_main();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

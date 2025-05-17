@@ -7,12 +7,22 @@
 
 
 #include "game_snake.h"
-#include <stdlib.h> // needed for rand() function
-#include "ssd1306.h"
+
+// ----->> includes start
+
+// include OLED Display library
+#include "oled_utils.h"
+
+// include mini-atari libraries
+#include "game_init.h"
+#include "game_score.h"
 #include "menu_logic.h"
-#include "game_start.h"
-#include "game_level.h"
 #include "menu_paused.h"
+
+// include other
+#include <stdlib.h> // needed for rand() function
+
+// includes end <<-----
 
 static void snake_move(game_snake_t *game);
 static void snake_spawn_food(game_snake_t *game);
@@ -23,13 +33,14 @@ static void snake_draw(const game_snake_t *game);
 void snake_game(game_snake_t *game)
 {
 	snake_init(game);
+
 	while(!game->game_over && current_menu_state == MENU_PLAYING)
 	{
-		HAL_Delay(game_get_delay_ms());
-		snake_update(game);
 		snake_draw(game);
+		snake_update(game);
 	}
-	HAL_Delay(1000);
+
+	HAL_Delay(500);
 	current_menu_state = MENU_GAMEOVER;
 }
 
@@ -41,8 +52,8 @@ static void snake_init(game_snake_t *game)
 
 	for (int i = 0; i < game->length; i++)
 	{
-		game->segments[i].x = 64 - (i * BLOCK_SIZE);
-		game->segments[i].y = 32;
+		game->segments[i].x = (BOARD_WIDTH / 2) - (i * BLOCK_SIZE);
+		game->segments[i].y = (BOARD_HEIGHT / 2);
 	}
 
 	snake_spawn_food(game);
@@ -55,13 +66,14 @@ static void snake_update(game_snake_t *game)
 
 	snake_move(game);
 
+	// checks if snake eats the bait
 	point_t head = game->segments[0];
-	if (head.x == game->food.x && head.y == game->food.y) // if snake eats the bait
+	if (head.x == game->food.x && head.y == game->food.y)
 	{
-		game_score_increase();
+		game_increase_score();
 		if (game->length < SNAKE_MAX_LENGTH)
 		{
-			game->segments[game->length] = game->segments[game->length - 1]; // create another piece on the tail
+			game->segments[game->length] = game->segments[game->length - 1]; // creates another piece on the tail
 			game->length++;
 		}
 		snake_spawn_food(game);
@@ -75,7 +87,7 @@ static void snake_update(game_snake_t *game)
 	}
 
 	// snake self-collapsion
-	for (int i = 1; i < game->length + 1; i++)
+	for (int i = 1; i < game->length; i++)
 	{
 		if (head.x == game->segments[i].x && head.y == game->segments[i].y)
 		{
@@ -83,10 +95,13 @@ static void snake_update(game_snake_t *game)
 			break;
 		}
 	}
+
+	HAL_Delay(game_get_delay_ms());
 }
 
 static void snake_move(game_snake_t *game)
 {
+	// gets snake direction
 	joystick_direction_t input = joystick_direction();
 	if (input != DIRECTION_NONE)
 	{
@@ -99,13 +114,13 @@ static void snake_move(game_snake_t *game)
 		}
 	}
 
-	// move the body
+	// moves the body
 	for (int i = game->length; i > 0; i--)
 	{
 		game->segments[i] = game->segments[i - 1];
 	}
 
-	// move the head
+	// moves the head
 	switch(game->direction)
 	{
 	case DIRECTION_UP : game->segments[0].y -= BLOCK_SIZE; break;
@@ -125,8 +140,8 @@ static void snake_spawn_food(game_snake_t *game)
 	while (!valid)
 	{
 		// we use ...* BLOCK_SIZE to avoid food spawning on locations that snake cannot pass through
-		uint8_t x = (rand() % (BOARD_WIDTH / BLOCK_SIZE) * BLOCK_SIZE);
-		uint8_t y = (rand() % (BOARD_HEIGHT / BLOCK_SIZE) * BLOCK_SIZE);
+		uint8_t x = (rand() % (BOARD_WIDTH / BLOCK_SIZE)) * BLOCK_SIZE;
+		uint8_t y = (rand() % (BOARD_HEIGHT / BLOCK_SIZE)) * BLOCK_SIZE;
 
 		valid = true;
 
@@ -135,11 +150,12 @@ static void snake_spawn_food(game_snake_t *game)
 		{
 			if (game->segments[i].x == x && game->segments[i].y == y)
 			{
-				valid = false;
-				break;
+				valid = false;	// food generated on snake, repeat the process.
+				break;	// break out of for loop
 			}
 		}
 
+		// food is not generated on snake, thus complete the function
 		if (valid)
 		{
 			game->food.x = x;
@@ -150,18 +166,19 @@ static void snake_spawn_food(game_snake_t *game)
 
 static void snake_draw(const game_snake_t *game)
 {
-	ssd1306_Fill(Black);
-	ssd1306_DrawRectangle(0, 0, 127, 63, White);
+	oled_clear();
+
+	oled_draw_rectangle(0, 0, BOARD_WIDTH - 1, BOARD_HEIGHT - 1, oled_color_white);
 
 	// draw food
-	ssd1306_DrawSquare(game->food.x, game->food.y, BLOCK_SIZE, White);
+	oled_fill_square(game->food.x, game->food.y, BLOCK_SIZE, oled_color_white);
 
 	// draw snake
 	uint8_t i = 0;
 	for (i = 0; i < game->length; i++) // draw whole body
 	{
-		ssd1306_DrawSquare(game->segments[i].x, game->segments[i].y, BLOCK_SIZE, White);
+		oled_fill_square(game->segments[i].x, game->segments[i].y, BLOCK_SIZE, oled_color_white);
 	}
 
-	ssd1306_UpdateScreen();
+	oled_update();
 }

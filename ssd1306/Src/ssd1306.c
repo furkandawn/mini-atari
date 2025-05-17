@@ -217,7 +217,7 @@ void ssd1306_DrawPixel(uint8_t x, uint8_t y, SSD1306_COLOR color) {
  * Y => Y to (Y + size)
  * color => Black or White
  */
-void ssd1306_DrawSquare(uint8_t x, uint8_t y, uint8_t size, SSD1306_COLOR color) {
+void ssd1306_FillSquare(uint8_t x, uint8_t y, uint8_t size, SSD1306_COLOR color) {
 	for (uint8_t i = 0; i < size; i++) {
 		for (uint8_t j = 0; j < size; j++) {
 			ssd1306_DrawPixel(x + i, y + j, color);

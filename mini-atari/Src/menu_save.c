@@ -8,23 +8,24 @@
 
 #include "menu_save.h"
 
-// includes start
-// include ssd1306 OLED Display
-#include "ssd1306.h"
-#include "ssd1306_fonts.h"
+// ----->> includes start
+
+// include OLED Display library
 #include "oled_utils.h"
 
+// include mini-atari libraries
+#include "menu_main.h"
+#include "game_score.h"
 #include "joystick.h"
 #include "menu_logic.h"
-#include "game_level.h"
-#include "menu_leaderboard.h"
-#include "oled_utils.h"
+#include "game_leaderboard.h"
 
+// include other
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
-// includes end
+// includes end <<-----
 
 typedef enum
 {
@@ -52,13 +53,15 @@ static bool is_letter_focused = true;
 
 static void draw_menu_save_actions(uint8_t current_menu_save_action)
 {
-	ssd1306_Fill(Black);
+	oled_clear(); // clears the OLED screen
 
-	oled_draw_horizontal_menu(menu_save_items, Font_6x8, 55, White, &current_menu_save_action, SAVE_COUNT);
+	oled_draw_horizontal_menu(menu_save_items, oled_font_6x8, 55, oled_color_white, &current_menu_save_action, SAVE_COUNT);
 
 	// draw the upper side
-	ssd1306_DrawRectangle(14, 0, 114, 18, White);
-	oled_draw_horizontal_string(current_menu_save_name, Font_7x10, 5, White);
+	uint8_t rect_x = 20;
+	uint8_t rect_y = 20;
+	oled_draw_rectangle(rect_x, 0, BOARD_WIDTH - rect_x, rect_y, oled_color_white);
+	oled_write_horizontal_string(current_menu_save_name, oled_font_7x10, 5, oled_color_white);
 
 	char left = ((current_menu_save_letter + ALPHABET_COUNT - 1) % ALPHABET_COUNT)  + 'A';
 	char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
@@ -66,21 +69,23 @@ static void draw_menu_save_actions(uint8_t current_menu_save_action)
 
 	char buffer[32];
 	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
-	oled_draw_horizontal_string(buffer, Font_6x8, 32, White);
+	oled_write_horizontal_string(buffer, oled_font_6x8, 32, oled_color_white);
 
 	char mid_buffer[2] = { mid, '\0'};
-	oled_draw_horizontal_string(mid_buffer, Font_16x24, 25, White);
+	oled_write_horizontal_string(mid_buffer, oled_font_16x24, 25, oled_color_white);
 	// end of drawing upper side
 
-	ssd1306_UpdateScreen(); // Refresh OLED screen
+	oled_update(); // Refreshes the OLED screen
 }
 
 static void draw_menu_save_alphabet(uint8_t current_menu_save_letter)
 {
-	ssd1306_Fill(Black);
+	oled_clear(); // clears the OLED screen
 
-	ssd1306_DrawRectangle(14, 0, 114, 18, White);
-	oled_draw_horizontal_string(current_menu_save_name, Font_7x10, 5, White);
+	uint8_t rect_x = 20;
+	uint8_t rect_y = 20;
+	oled_draw_rectangle(rect_x, 0, BOARD_WIDTH - rect_x, rect_y, oled_color_white);
+	oled_write_horizontal_string(current_menu_save_name, oled_font_7x10, 5, oled_color_white);
 
 	char left = ((current_menu_save_letter + ALPHABET_COUNT - 1) % ALPHABET_COUNT)  + 'A';
 	char mid = ((current_menu_save_letter) % ALPHABET_COUNT) + 'A';
@@ -88,16 +93,38 @@ static void draw_menu_save_alphabet(uint8_t current_menu_save_letter)
 
 	char buffer[32];
 	snprintf(buffer, sizeof(buffer), "%c  <     >  %c", left, right);
-	oled_draw_horizontal_string(buffer, Font_6x8, 32, White);
+	oled_write_horizontal_string(buffer, oled_font_6x8, 32, oled_color_white);
 
 	char mid_buffer[2] = { mid, '\0'};
-	oled_draw_horizontal_string(mid_buffer, Font_16x24, 25, White);
+	oled_write_horizontal_string(mid_buffer, oled_font_16x24, 25, oled_color_white);
 
 	// draw bottom side
-	oled_draw_horizontal_menu(menu_save_items, Font_6x8, 55, White, &avoid_highlight, SAVE_COUNT);
+	oled_draw_horizontal_menu(menu_save_items, oled_font_6x8, 55, oled_color_white, &avoid_highlight, SAVE_COUNT);
 	// end of drawing bottom side
 
-	ssd1306_UpdateScreen(); // Refresh OLED screen
+	oled_update(); // Refreshes the OLED screen
+}
+
+static void draw_not_eligible(void)
+{
+	oled_clear(); // clears the OLED screen
+
+	oled_write_horizontal_string("you are not", oled_font_7x10, 0, oled_color_white);
+	oled_write_horizontal_string("in top 3...", oled_font_7x10, 15, oled_color_white);
+
+	oled_update(); // Refreshes the OLED screen
+
+	HAL_Delay(1500);
+
+	oled_write_horizontal_string("...YET", oled_font_16x15, 30, oled_color_white);
+
+	oled_update();
+
+	HAL_Delay(1000);
+
+	oled_write_horizontal_string(">> press to exit <<", oled_font_6x8, 54, oled_color_white);
+
+	oled_update(); // Refreshes the OLED screen
 }
 
 static void navigate_menu_save_actions(void)
@@ -124,7 +151,7 @@ static void handle_selected_letter_input(void)
 		*current_letter_ptr = mid; // pointer & array arithmetics
 		current_letter_ptr++;
 		*current_letter_ptr = '\0'; // last character MUST be null
-		ssd1306_UpdateScreen();
+		oled_update(); // Refreshes the OLED screen
 	}
 }
 
@@ -134,7 +161,21 @@ static void handle_menu_save_bksp(void) // bksp stands for backspace
 	{
 		current_letter_ptr--;
 		*current_letter_ptr = '\0'; // last character MUST be null
-		ssd1306_UpdateScreen();
+		oled_update(); // Refreshes the OLED screen
+	}
+}
+
+static void handle_not_eligible(void)
+{
+	bool drawn_once = false;
+
+	while (!joystick_is_pressed())
+	{
+		if (!drawn_once)
+		{
+			draw_not_eligible();
+			drawn_once = true;
+		}
 	}
 }
 
@@ -144,8 +185,8 @@ static void handle_current_menu_save_action(void)
 	{
 		case SAVE_SAVE:
 		{
-			// leaderboard direct flash write function
-			current_menu_state = MENU_MAIN;
+			add_leaderboard_entry(current_game_type, current_menu_save_name, game_get_score(), game_get_time_spent());
+			current_menu_state = MENU_LEADERBOARD;
 			break;
 		}
 		case SAVE_BKSP:
@@ -155,7 +196,7 @@ static void handle_current_menu_save_action(void)
 		}
 		case SAVE_EXIT:
 		{
-			current_menu_state = MENU_MAIN;
+			current_menu_state = MENU_GAMEOVER;
 			break;
 		}
 		default:
@@ -167,6 +208,13 @@ static void handle_current_menu_save_action(void)
 
 void handle_menu_save(void)
 {
+	if (!is_score_eligible(current_game_type, game_get_score()))
+	{
+		handle_not_eligible();
+		current_menu_state = MENU_GAMEOVER;
+		return;
+	}
+
 	joystick_direction_t direction = joystick_direction();
 	if (direction == DIRECTION_UP) is_letter_focused = true;
 	if (direction == DIRECTION_DOWN) is_letter_focused = false;

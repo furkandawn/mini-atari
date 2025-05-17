@@ -8,23 +8,25 @@
 
 #include "menu_gameover.h"
 
-// includes start
-// include ssd1306 OLED Display
-#include "ssd1306.h"
-#include "ssd1306_fonts.h"
+// ----->> includes start
 
+// include OLED Display library
+#include "oled_utils.h"
+
+// include mini-atari libraries
+#include "game_init.h"
+#include "game_score.h"
 #include "oled_utils.h"
 #include "joystick.h"
 #include "menu_logic.h"
 #include "menu_main.h"
 #include "menu_selected.h"
-#include "game_start.h"
-#include "game_level.h"
 
+// include other
 #include <stdio.h>
 #include <stdbool.h>
 
-// includes end
+// includes end <<-----
 
 static const char *menu_gameover_items[GAMEOVER_COUNT] =
 {
@@ -33,7 +35,7 @@ static const char *menu_gameover_items[GAMEOVER_COUNT] =
 		"Save Score"
 };
 
-game_over_action_t current_menu_gameover_action = GAMEOVER_PLAY_AGAIN;
+gameover_action_t current_menu_gameover_action = GAMEOVER_PLAY_AGAIN;
 
 bool animation_shown = false; // to draw game over screen animated, resets every start up of a game in "game_start.c"
 
@@ -43,46 +45,38 @@ bool animation_shown = false; // to draw game over screen animated, resets every
 
 static void draw_animated_menu_gameover(void)
 {
-	ssd1306_Fill(Black);
+	oled_clear();
 
-	ssd1306_SetCursor(9, 23);
-	ssd1306_WriteString("GAME OVER!", Font_11x18, White);
-	ssd1306_UpdateScreen();
+	oled_write_centered_string("GAME OVER !", oled_font_11x18, oled_color_white);
+	oled_update();
 	HAL_Delay(2000);
 
-	ssd1306_Fill(Black);
-	oled_draw_horizontal_string(">---YOUR STATS---<", Font_7x10, 0, White);
-	ssd1306_UpdateScreen();
+	oled_clear();
+
+	oled_write_horizontal_string(">---YOUR STATS---<", oled_font_7x10, 0, oled_color_white);
+	oled_update();
 	HAL_Delay(1000);
 
-	ssd1306_SetCursor(0, 25);
-	ssd1306_WriteString("SCORE : ", Font_6x8, White);
-	ssd1306_UpdateScreen();
-	HAL_Delay(1000);
-	char score[8];
-	snprintf(score, sizeof(score), "%d", game_get_score());
-	ssd1306_SetCursor(42, 25);
-	ssd1306_WriteString(score, Font_6x8, White);
-	ssd1306_UpdateScreen();
+	char buffer[48];
+	snprintf(buffer, sizeof(buffer), "Score:%d Time:%ds", game_get_score(), game_get_time_spent());
+	oled_write_horizontal_string(buffer, oled_font_6x8, 20, oled_color_white);
+	oled_update();
 	HAL_Delay(1000);
 }
 
 static void draw_menu_gameover(uint8_t current_menu_gameover_action)
 {
-	ssd1306_Fill(Black);
+	oled_clear();
 
-	oled_draw_horizontal_string(">---YOUR STATS---<", Font_7x10, 0, White);
+	oled_write_horizontal_string(">---YOUR STATS---<", oled_font_7x10, 0, oled_color_white);
 
-	ssd1306_SetCursor(0, 25);
-	ssd1306_WriteString("SCORE : ", Font_6x8, White);
-	char score[8];
-	snprintf(score, sizeof(score), "%d", game_get_score());
-	ssd1306_SetCursor(42, 25);
-	ssd1306_WriteString(score, Font_6x8, White);
+	char buffer[48];
+	snprintf(buffer, sizeof(buffer), "Score:%d Time:%ds", game_get_score(), game_get_time_spent());
+	oled_write_horizontal_string(buffer, oled_font_6x8, 20, oled_color_white);
 
-	oled_draw_vertical_menu(menu_gameover_items, Font_6x8, 35, White, &current_menu_gameover_action, GAMEOVER_COUNT);
+	oled_draw_vertical_menu(menu_gameover_items, oled_font_6x8, 35, oled_color_white, &current_menu_gameover_action, GAMEOVER_COUNT);
 
-	ssd1306_UpdateScreen(); // Refresh OLED screen
+	oled_update();
 }
 
 static void navigate_menu_gameover(void)
@@ -106,7 +100,7 @@ static void handle_current_menu_gameover_action(void)
 		case GAMEOVER_MAIN_MENU:
 		{
 			current_menu_state = MENU_MAIN;
-			current_menu_main_item = GAME_SNAKE;
+			current_game_type = GAME_SNAKE;
 			current_menu_selected_action = ACTION_START;
 			current_menu_gameover_action = GAMEOVER_PLAY_AGAIN;
 			break;

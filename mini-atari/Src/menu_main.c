@@ -8,44 +8,46 @@
 
 #include "menu_main.h"
 
-// includes start
-// include ssd1306 OLED Display
-#include "ssd1306.h"
-#include "ssd1306_fonts.h"
+// ----->> includes start
 
+// include OLED Display library
 #include "oled_utils.h"
+
+// include mini-atari libraries
 #include "joystick.h"
 #include "menu_logic.h"
+
+// include other
 #include <stdint.h>
 
-// includes end
+// includes end <<-----
 
 const char *menu_main_items[GAME_COUNT] =
 {
 		"Snake Game",
-		"Game2",
+		"Tetris Game",
 		"Game3",
 		"Game4",
 		"Game5"
 };
 
-menu_main_item_t current_menu_main_item = GAME_SNAKE;
+game_type_t current_game_type = GAME_SNAKE;
 
 static void draw_menu_main(uint8_t current_game_type)
 {
-	ssd1306_Fill(Black); // Clear the OLED display
+	oled_clear(); // Clear the OLED display
 
     // Display game list
-	oled_draw_horizontal_string(">>> GAME MENU <<<", Font_7x10, 0, White);
+	oled_write_horizontal_string(">>> GAME MENU <<<", oled_font_7x10, 0, oled_color_white);
 
-	oled_draw_vertical_menu(menu_main_items, Font_6x8, 15, White, &current_game_type, GAME_COUNT);
+	oled_draw_vertical_menu(menu_main_items, oled_font_6x8, 15, oled_color_white, &current_game_type, GAME_COUNT);
 
-    ssd1306_UpdateScreen();  // Refresh OLED screen
+    oled_update();  // Refresh OLED screen
 }
 
 static void navigate_menu_main(void)
 {
-	navigate_menu_up_down(&current_menu_main_item, GAME_COUNT, draw_menu_main);
+	navigate_menu_up_down(&current_game_type, GAME_COUNT, draw_menu_main);
 }
 
 void handle_menu_main(void)

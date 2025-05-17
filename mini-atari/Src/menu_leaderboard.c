@@ -8,51 +8,94 @@
 
 #include "menu_leaderboard.h"
 
-// includes start
-// include ssd1306 OLED Display
-#include "ssd1306.h"
-#include "ssd1306_fonts.h"
+// ----->> includes start
 
+// include OLED Display library
+#include "oled_utils.h"
+
+// include mini-atari libraries
+#include "menu_main.h"
 #include "joystick.h"
 #include "menu_logic.h"
-#include "menu_save.h"
+#include "game_leaderboard.h"
 
-#include <stdbool.h>
+// include other
 #include <stdio.h>
+#include <stdbool.h>
 
-// includes end
+// includes end <<-----
 
-leaderboard_entry_t leaderboard[LEADERBOARD_TOP_COUNT] =
+static uint8_t current_leaderboard_entry_index = 0;
+
+static void draw_menu_leaderboard(uint8_t current_leaderboard_entry_index)
 {
-		{"First", 0},
-		{"Second", 0},
-		{"Third", 0}
-};
-/*
-static void draw_menu_leaderboard(void)
+	oled_clear();
+
+	oled_write_horizontal_string("<< LEADERBOARD >>", oled_font_7x10, 0, oled_color_white);
+	oled_draw_vertical_menu(menu_leaderboard_entries[current_game_type], oled_font_7x10, 15, oled_color_white, &current_leaderboard_entry_index, LEADERBOARD_TOTAL_COUNT);
+
+	oled_update();
+}
+
+static void draw_menu_leaderboard_selected(uint8_t current_leaderboard_entry_index)
 {
-	ssd1306_Fill(Black);
+	oled_clear();
 
-	ssd1306_SetCursor(30, 0);
-	ssd1306_WriteString("LEADERBOARD", Font_7x10, White);
-
+	const leaderboard_entry_t *entry = &leaderboard[current_game_type][current_leaderboard_entry_index];
 	char buffer[32];
-	for (uint8_t i = 0; i < LEADERBOARD_TOP_COUNT; i++)
-	{
-		snprintf(buffer, sizeof(buffer), "%d. %s --> %d", i + 1, leaderboard[i].name, leaderboard[i].score);
-		ssd1306_SetCursor(5, 20 + (i * 10));
-		ssd1306_WriteString(buffer, Font_6x8, White);
-	}
 
-	ssd1306_SetCursor(20, 45);
-	ssd1306_WriteString("Press to Exit", Font_6x8, White);
+	snprintf(buffer, sizeof(buffer), "%d. %s", current_leaderboard_entry_index + 1, menu_leaderboard_entries[current_game_type][current_leaderboard_entry_index]);
+	oled_write_horizontal_string(buffer, oled_font_7x10, 0, oled_color_white);
 
-	ssd1306_UpdateScreen();
+	snprintf(buffer, sizeof(buffer), "SCORE : %d", entry->score);
+	oled_write_horizontal_string(buffer, oled_font_7x10, 20, oled_color_white);
+
+	snprintf(buffer, sizeof(buffer), "TIME : %d s", entry->time_passed);
+	oled_write_horizontal_string(buffer, oled_font_7x10, 35, oled_color_white);
+
+	oled_write_horizontal_string(">> press to exit <<", oled_font_6x8, 54, oled_color_white);
+
+	oled_update();
 }
 
-static void set_leaderboard(uint8_t index)
+static void navigate_menu_leaderboard(void)
 {
-	strncpy(leaderboard[index].name, current_menu_save_name, sizeof(leaderboard[index].name));
-	// leaderboard[index].score
+	navigate_menu_up_down(&current_leaderboard_entry_index, LEADERBOARD_TOTAL_COUNT, draw_menu_leaderboard);
 }
-*/
+
+
+// LOGIC HANDLERS
+
+void handle_menu_leaderboard(void)
+{
+	navigate_menu_leaderboard();
+
+	if (joystick_is_pressed())
+	{
+		if (current_leaderboard_entry_index == LEADERBOARD_TOTAL_COUNT - 1)
+		{
+			current_leaderboard_entry_index = 0;
+			current_menu_state = MENU_SELECTED;
+		}
+		else
+		{
+			bool leaderboard_entry_focused = true;
+			bool drawn_once = false;
+
+			while (leaderboard_entry_focused)
+			{
+				if (!drawn_once)
+				{
+					draw_menu_leaderboard_selected(current_leaderboard_entry_index);
+					drawn_once = true;
+				}
+
+				if (joystick_is_pressed())
+				{
+					leaderboard_entry_focused = false;
+					current_menu_state = MENU_LEADERBOARD;
+				}
+			}
+		}
+	}
+}

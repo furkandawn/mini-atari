@@ -8,17 +8,14 @@
 #ifndef INC_MENU_LEADERBOARD_H_
 #define INC_MENU_LEADERBOARD_H_
 
-#include <stdint.h>
+#ifndef LEADERBOARD_COUNT
+#define LEADERBOARD_COUNT 3
+#endif
 
-#define MAX_NAME_LENGTH 11
-#define LEADERBOARD_TOP_COUNT 3
+#ifndef LEADERBOARD_TOTAL_COUNT
+#define LEADERBOARD_TOTAL_COUNT	(LEADERBOARD_COUNT + 1)  // + 1 for "EXIT" option
+#endif
 
-typedef struct
-{
-	char name[MAX_NAME_LENGTH];
-	uint8_t score;
-} leaderboard_entry_t;
-
-extern leaderboard_entry_t leaderboard[LEADERBOARD_TOP_COUNT];
+void handle_menu_leaderboard(void);
 
 #endif /* INC_MENU_LEADERBOARD_H_ */

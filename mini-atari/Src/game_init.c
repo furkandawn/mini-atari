@@ -1,56 +1,61 @@
 /*
- * game_start.c
+ * game_init.c
  *
  *  Created on: Apr 25, 2025
  *      Author: furkandawn
  */
 
 
-#include "game_start.h"
+#include "game_init.h"
 
-#define COUNTDOWN 3
+// ----->> includes start
 
-// includes start
-// include ssd1306 OLED Display
-#include "ssd1306.h"
-#include "ssd1306_fonts.h"
+// include OLED Display library
+#include "oled_utils.h"
 
-#include <stdio.h>
-#include "game_level.h"
+// include mini-atari libraries
+#include "game_score.h"
 #include "menu_main.h"
 #include "menu_gameover.h"
 
-// include games
+// include mini-atari games
 #include "game_snake.h"
 
-// includes end
+// include other
+#include <stdio.h>
+
+// includes end <<-----
+
+#define COUNTDOWN 3
 
 static void game_start(void)
 {
-	game_level_reset();
-	animation_shown = false;
-
-	ssd1306_Fill(Black);
-	ssd1306_UpdateScreen();
+	oled_clear();
+	oled_update();
 	HAL_Delay(200);
 
 	for (uint8_t i = COUNTDOWN; i > 0; i--)
 	{
+		oled_clear();
+
 		char buffer[4];
 		sprintf(buffer, "%d", i);
-		ssd1306_SetCursor(54, 24);
-		ssd1306_WriteString(buffer, Font_16x24, White);
-		ssd1306_UpdateScreen();
-		ssd1306_Fill(Black);
+
+		oled_write_centered_string(buffer, oled_font_16x26, oled_color_white);
+
+		oled_update();
 		HAL_Delay(500);
 	}
+
+	animation_shown = false;
+	game_level_reset();
 }
 
 void game_init(void)
 {
 	game_start();
 
-	switch(current_menu_main_item)
+	switch(current_game_type)
 	{
 	case GAME_SNAKE:
 	{
@@ -58,7 +63,7 @@ void game_init(void)
 		snake_game(&game);
 		break;
 	}
-	case GAME_2:
+	case GAME_TETRIS:
 	{
 		break;
 	}
