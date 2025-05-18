@@ -14,11 +14,11 @@
 #include "oled_utils.h"
 
 // include mini-atari libraries
-#include "menu_main.h"
-#include "game_score.h"
-#include "joystick.h"
-#include "menu_logic.h"
 #include "game_leaderboard.h"
+#include "game_runtime.h"
+#include "menu_logic.h"
+#include "menu_main.h"
+#include "joystick.h"
 
 // include other
 #include <stdbool.h>
@@ -27,9 +27,11 @@
 
 // includes end <<-----
 
+#define ALPHABET_COUNT 26
+
 typedef enum
 {
-	A = 0, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, ALPHABET_COUNT
+	A = 0, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
 } menu_save_alphabet_t;
 
 static const char *menu_save_items[] =
@@ -186,6 +188,7 @@ static void handle_current_menu_save_action(void)
 		case SAVE_SAVE:
 		{
 			add_leaderboard_entry(current_game_type, current_menu_save_name, game_get_score(), game_get_time_spent());
+			current_menu_save_action = SAVE_BKSP;
 			current_menu_state = MENU_LEADERBOARD;
 			break;
 		}
@@ -196,6 +199,7 @@ static void handle_current_menu_save_action(void)
 		}
 		case SAVE_EXIT:
 		{
+			current_menu_save_action = SAVE_BKSP;
 			current_menu_state = MENU_GAMEOVER;
 			break;
 		}

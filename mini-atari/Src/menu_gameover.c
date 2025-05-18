@@ -14,8 +14,8 @@
 #include "oled_utils.h"
 
 // include mini-atari libraries
+#include "game_runtime.h"
 #include "game_init.h"
-#include "game_score.h"
 #include "oled_utils.h"
 #include "joystick.h"
 #include "menu_logic.h"
@@ -47,7 +47,7 @@ static void draw_animated_menu_gameover(void)
 {
 	oled_clear();
 
-	oled_write_centered_string("GAME OVER !", oled_font_11x18, oled_color_white);
+	oled_write_centered_string("GAME OVER!", oled_font_11x18, oled_color_white);
 	oled_update();
 	HAL_Delay(2000);
 

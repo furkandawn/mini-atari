@@ -13,15 +13,8 @@
 #ifndef INC_OLED_UTILS_H_
 #define INC_OLED_UTILS_H_
 
-// SSD1306 OLED width in pixels
-#ifndef SSD1306_WIDTH
-#define SSD1306_WIDTH     128
-#endif
-
-// SSD1306 OLED height in pixels
-#ifndef SSD1306_HEIGHT
-#define SSD1306_HEIGHT     64
-#endif
+#define OLED_WIDTH SSD1306_WIDTH
+#define OLED_HEIGHT SSD1306_HEIGHT
 
 typedef enum
 {
@@ -48,6 +41,7 @@ void oled_update(void);
 void oled_draw_rectangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, oled_color_t oled_color);
 void oled_fill_rectangle(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, oled_color_t oled_color);
 void oled_fill_square(uint8_t x, uint8_t y, uint8_t size, oled_color_t oled_color);
+void oled_draw_bitmap(uint8_t x, uint8_t y, const unsigned char* bitmap, uint8_t w, uint8_t h, oled_color_t oled_color);
 char oled_write_string(const char* str, oled_font_t oled_font, oled_color_t oled_color);
 void oled_write_centered_string(char* str, oled_font_t oled_font, oled_color_t oled_color);
 void oled_write_horizontal_string(char* str, oled_font_t oled_font, uint8_t y, oled_color_t oled_color);

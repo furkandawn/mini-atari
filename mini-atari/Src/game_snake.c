@@ -14,8 +14,8 @@
 #include "oled_utils.h"
 
 // include mini-atari libraries
+#include "game_runtime.h"
 #include "game_init.h"
-#include "game_score.h"
 #include "menu_logic.h"
 #include "menu_paused.h"
 
@@ -70,7 +70,7 @@ static void snake_update(game_snake_t *game)
 	point_t head = game->segments[0];
 	if (head.x == game->food.x && head.y == game->food.y)
 	{
-		game_increase_score();
+		game_update_progress();
 		if (game->length < SNAKE_MAX_LENGTH)
 		{
 			game->segments[game->length] = game->segments[game->length - 1]; // creates another piece on the tail

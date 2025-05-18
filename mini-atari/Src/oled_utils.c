@@ -23,6 +23,7 @@
 
 // includes end <<-----
 
+
 uint8_t avoid_highlight = 255; // use this in functions to avoid highlighting & navigation.
 
 
@@ -71,6 +72,7 @@ void oled_init(void)
 {
 	ssd1306_Init();
 }
+
 /*
  * Sets the cursor at requested position
  */
@@ -120,6 +122,14 @@ void oled_fill_square(uint8_t x, uint8_t y, uint8_t size, oled_color_t oled_colo
 }
 
 /*
+ * Draws a bitmap
+ */
+void oled_draw_bitmap(uint8_t x, uint8_t y, const unsigned char* bitmap, uint8_t w, uint8_t h, oled_color_t oled_color)
+{
+	ssd1306_DrawBitmap(x, y, bitmap, w, h, map_color(oled_color));
+}
+
+/*
  * Writes a string at requested position
  */
 char oled_write_string(const char* str, oled_font_t oled_font, oled_color_t oled_color)
@@ -127,23 +137,23 @@ char oled_write_string(const char* str, oled_font_t oled_font, oled_color_t oled
 	return ssd1306_WriteString(str, *map_font(oled_font), map_color(oled_color));
 }
 
+
+/* Centered String & Menu Functions */
+
 /*
  * Draws the string at the center of screen
  */
 void oled_write_centered_string(char* str, oled_font_t oled_font, oled_color_t oled_color)
 {
 	uint16_t string_pixel_width = strlen(str) * map_font(oled_font)->width;
-	uint8_t x = (SSD1306_WIDTH - string_pixel_width) / 2;
+	uint8_t x = (OLED_WIDTH - string_pixel_width) / 2;
 
 	uint16_t string_pixel_height = map_font(oled_font)->height;
-	uint8_t y = (SSD1306_HEIGHT - string_pixel_height) / 2;
+	uint8_t y = (OLED_HEIGHT - string_pixel_height) / 2;
 
 	oled_set_cursor(x, y);
 	oled_write_string(str, oled_font, oled_color);
 }
-
-
-/* Horizontal Centered Functions */
 
 /*
  * Draws the string horizontal centered
@@ -152,7 +162,7 @@ void oled_write_horizontal_string(char* str, oled_font_t oled_font, uint8_t y, o
 {
 	uint16_t string_pixel_width = strlen(str) * map_font(oled_font)->width;
 
-	uint8_t x = (SSD1306_WIDTH - string_pixel_width) / 2;
+	uint8_t x = (OLED_WIDTH - string_pixel_width) / 2;
 
 	oled_set_cursor(x, y);
 	oled_write_string(str, oled_font, oled_color);
@@ -163,7 +173,7 @@ void oled_write_horizontal_string(char* str, oled_font_t oled_font, uint8_t y, o
  */
 void oled_draw_horizontal_menu(const char* items[], oled_font_t oled_font, uint8_t y, oled_color_t oled_color, uint8_t *current_index, uint8_t item_count)
 {
-	uint16_t section_width = SSD1306_WIDTH / item_count;
+	uint16_t section_width = OLED_WIDTH / item_count;
 
 	for (uint8_t i = 0; i < item_count; i++)
 	{
@@ -208,7 +218,7 @@ void oled_draw_vertical_menu(const char* items[], oled_font_t oled_font, uint8_t
 	{
 		uint8_t y = start_y + i * line_height;
 		uint8_t string_pixel_width = strlen(items[i]) * map_font(oled_font)->width;
-		uint8_t x = (SSD1306_WIDTH - string_pixel_width) / 2;
+		uint8_t x = (OLED_WIDTH - string_pixel_width) / 2;
 
 		// highlight if applicable. insert "&avoid_highlight" to avoid
 		if (i == *current_index)
