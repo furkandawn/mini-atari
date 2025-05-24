@@ -8,10 +8,12 @@
 
 #include "menu_leaderboard.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-#include "oled_utils.h"
+// include display library
+#include "display_interface.h"	// Core display API (write, draw, update)
+#include "display_config.h"		// DISPLAY_WIDTH / DISPLAY_HEIGHT macros
+#include "display_utils.h"		// font_height() macro & avoid_highlight flag
 
 // include mini-atari libraries
 #include "menu_main.h"
@@ -23,39 +25,40 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// includes end <<-----
+// === Includes End ===
+
 
 static uint8_t current_leaderboard_entry_index = 0;
 
 static void draw_menu_leaderboard(uint8_t current_leaderboard_entry_index)
 {
-	oled_clear();
+	display_clear();
 
-	oled_write_horizontal_string("<< LEADERBOARD >>", oled_font_7x10, 0, oled_color_white);
-	oled_draw_vertical_menu(menu_leaderboard_entries[current_game_type], oled_font_7x10, 15, oled_color_white, &current_leaderboard_entry_index, LEADERBOARD_TOTAL_COUNT);
+	display_write_horizontal_string("<< LEADERBOARD >>", 0, display_font_7x10, display_color_white);
+	display_draw_vertical_menu(menu_leaderboard_entries[current_game_type], 15, &current_leaderboard_entry_index, LEADERBOARD_TOTAL_COUNT, display_font_7x10, display_color_white);
 
-	oled_update();
+	display_update();
 }
 
 static void draw_menu_leaderboard_selected(uint8_t current_leaderboard_entry_index)
 {
-	oled_clear();
+	display_clear();
 
 	const leaderboard_entry_t *entry = &leaderboard[current_game_type][current_leaderboard_entry_index];
 	char buffer[32];
 
 	snprintf(buffer, sizeof(buffer), "%d. %s", current_leaderboard_entry_index + 1, menu_leaderboard_entries[current_game_type][current_leaderboard_entry_index]);
-	oled_write_horizontal_string(buffer, oled_font_7x10, 0, oled_color_white);
+	display_write_horizontal_string(buffer, 0, display_font_7x10, display_color_white);
 
 	snprintf(buffer, sizeof(buffer), "SCORE : %d", entry->score);
-	oled_write_horizontal_string(buffer, oled_font_7x10, 20, oled_color_white);
+	display_write_horizontal_string(buffer, DISPLAY_HEIGHT / 2 - font_height(display_font_7x10) - 2, display_font_7x10, display_color_white);
 
 	snprintf(buffer, sizeof(buffer), "TIME : %d s", entry->time_passed);
-	oled_write_horizontal_string(buffer, oled_font_7x10, 35, oled_color_white);
+	display_write_horizontal_string(buffer, DISPLAY_HEIGHT / 2, display_font_7x10, display_color_white);
 
-	oled_write_horizontal_string(">> press to exit <<", oled_font_6x8, 54, oled_color_white);
+	display_write_horizontal_string(">> press to exit <<", DISPLAY_HEIGHT - font_height(display_font_6x8), display_font_6x8, display_color_white);
 
-	oled_update();
+	display_update();
 }
 
 static void navigate_menu_leaderboard(void)

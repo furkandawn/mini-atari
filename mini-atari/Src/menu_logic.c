@@ -8,9 +8,9 @@
 
 #include "menu_logic.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
+// include display library
 
 
 // include mini-atari libraries
@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// includes end <<-----
+// === Includes End ===
 
 menu_state_t current_menu_state = MENU_MAIN;
 

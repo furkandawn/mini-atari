@@ -9,20 +9,11 @@
 #ifndef INC_GAME_SNAKE_H_
 #define INC_GAME_SNAKE_H_
 
+#include "joystick.h"
 #include <stdint.h>
 #include <stdbool.h>
-#include "joystick.h"
 
 #define SNAKE_MAX_LENGTH 128
-#define BLOCK_SIZE 4  // game grid
-
-#ifndef BOARD_WIDTH
-#define BOARD_WIDTH 			128
-#endif
-
-#ifndef BOARD_HEIGHT
-#define BOARD_HEIGHT 			64
-#endif
 
 typedef struct // x and y coordinates of a specific point
 {

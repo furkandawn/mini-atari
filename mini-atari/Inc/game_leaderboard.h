@@ -8,24 +8,13 @@
 #ifndef INC_GAME_LEADERBOARD_H_
 #define INC_GAME_LEADERBOARD_H_
 
+#include "menu_main.h"
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "menu_main.h"
-
 #define MAX_NAME_LENGTH 11
-
-#ifndef GAME_COUNT
-#define GAME_COUNT 5
-#endif
-
-#ifndef LEADERBOARD_COUNT
 #define LEADERBOARD_COUNT 3
-#endif
-
-#ifndef LEADERBOARD_TOTAL_COUNT
 #define LEADERBOARD_TOTAL_COUNT	(LEADERBOARD_COUNT + 1)  // + 1 for "EXIT" option
-#endif
 
 /*
  * Do not change this, or if you change, make it divisible by 4

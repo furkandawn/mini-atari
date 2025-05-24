@@ -8,25 +8,25 @@
 
 #include "menu_gameover.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-#include "oled_utils.h"
+// include display library
+#include "display_interface.h"
 
 // include mini-atari libraries
 #include "game_runtime.h"
 #include "game_init.h"
-#include "oled_utils.h"
 #include "joystick.h"
 #include "menu_logic.h"
 #include "menu_main.h"
 #include "menu_selected.h"
 
 // include other
+#include "stm32f0xx_hal.h"
 #include <stdio.h>
 #include <stdbool.h>
 
-// includes end <<-----
+// === Includes End ===
 
 static const char *menu_gameover_items[GAMEOVER_COUNT] =
 {
@@ -45,38 +45,38 @@ bool animation_shown = false; // to draw game over screen animated, resets every
 
 static void draw_animated_menu_gameover(void)
 {
-	oled_clear();
+	display_clear();
 
-	oled_write_centered_string("GAME OVER!", oled_font_11x18, oled_color_white);
-	oled_update();
+	display_write_centered_string("GAME OVER!", display_font_11x18, display_color_white);
+	display_update();
 	HAL_Delay(2000);
 
-	oled_clear();
+	display_clear();
 
-	oled_write_horizontal_string(">---YOUR STATS---<", oled_font_7x10, 0, oled_color_white);
-	oled_update();
+	display_write_horizontal_string(">---YOUR STATS---<",  0, display_font_7x10, display_color_white);
+	display_update();
 	HAL_Delay(1000);
 
 	char buffer[48];
 	snprintf(buffer, sizeof(buffer), "Score:%d Time:%ds", game_get_score(), game_get_time_spent());
-	oled_write_horizontal_string(buffer, oled_font_6x8, 20, oled_color_white);
-	oled_update();
+	display_write_horizontal_string(buffer, 20, display_font_6x8, display_color_white);
+	display_update();
 	HAL_Delay(1000);
 }
 
 static void draw_menu_gameover(uint8_t current_menu_gameover_action)
 {
-	oled_clear();
+	display_clear();
 
-	oled_write_horizontal_string(">---YOUR STATS---<", oled_font_7x10, 0, oled_color_white);
+	display_write_horizontal_string(">---YOUR STATS---<",  0, display_font_7x10, display_color_white);
 
 	char buffer[48];
 	snprintf(buffer, sizeof(buffer), "Score:%d Time:%ds", game_get_score(), game_get_time_spent());
-	oled_write_horizontal_string(buffer, oled_font_6x8, 20, oled_color_white);
+	display_write_horizontal_string(buffer, 20, display_font_6x8, display_color_white);
 
-	oled_draw_vertical_menu(menu_gameover_items, oled_font_6x8, 35, oled_color_white, &current_menu_gameover_action, GAMEOVER_COUNT);
+	display_draw_vertical_menu(menu_gameover_items,  35, &current_menu_gameover_action, GAMEOVER_COUNT, display_font_6x8, display_color_white);
 
-	oled_update();
+	display_update();
 }
 
 static void navigate_menu_gameover(void)
@@ -94,7 +94,6 @@ static void handle_current_menu_gameover_action(void)
 		case GAMEOVER_PLAY_AGAIN:
 		{
 			current_menu_state = MENU_PLAYING;
-			game_init();
 			break;
 		}
 		case GAMEOVER_MAIN_MENU:

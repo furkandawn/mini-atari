@@ -8,16 +8,16 @@
 
 #include "game_config.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
+// include display library
 
 // include mini-atari libraries
 #include "menu_main.h"
 
 // include other
 
-// includes end <<-----
+// === Includes End ===
 
 const game_config_t game_configs[GAME_COUNT] =
 {

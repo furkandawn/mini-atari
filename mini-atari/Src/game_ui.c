@@ -8,10 +8,10 @@
 
 #include "game_ui.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-#include "oled_utils.h"
+// include display library
+#include "display_interface.h"
 
 // include mini-atari libraries
 #include "game_runtime.h"
@@ -20,31 +20,32 @@
 
 // include other
 #include <stdio.h>
+#include "stm32f0xx_hal.h"
 
-// includes end <<-----
+// === Includes End ===
 
 #define COUNTDOWN 3
 
 void game_draw_start_screen(void)
 {
 	// Draws bitmap
-	oled_clear();
-	oled_draw_bitmap(0, 0, game_bitmap[game_runtime.game_type], BITMAP_WIDTH, BITMAP_HEIGHT, oled_color_white);
-	oled_update();
+	display_clear();
+	display_draw_bitmap(0, 0, game_bitmap[game_runtime.game_type], DISPLAY_WIDTH, DISPLAY_HEIGHT, display_color_white);
+	display_update();
 	HAL_Delay(2500);
 
 	// Draws countdown
-	oled_clear();
+	display_clear();
 	for (uint8_t i = COUNTDOWN; i > 0; i--)
 	{
-		oled_clear();
+		display_clear();
 
 		char buffer[4];
 		sprintf(buffer, "%d", i);
 
-		oled_write_centered_string(buffer, oled_font_16x26, oled_color_white);
+		display_write_centered_string(buffer, display_font_16x24, display_color_white);
 
-		oled_update();
+		display_update();
 		HAL_Delay(500);
 	}
 
@@ -55,9 +56,9 @@ void game_draw_level_screen(void)
 {
 	char buffer[16];
 	snprintf(buffer, sizeof(buffer), "LEVEL %d", game_runtime.level);
-	oled_write_centered_string(buffer, oled_font_16x26, oled_color_white);
+	display_write_centered_string(buffer, display_font_16x24, display_color_white);
 
-	oled_update();
+	display_update();
 
 	HAL_Delay(1000);
 }

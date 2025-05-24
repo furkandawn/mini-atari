@@ -10,14 +10,8 @@
 
 #include <stdint.h>
 
-#define TETRIS_BLOCK_SIZE 3 	// game grid 3x3
-
 #define TETRIS_BOARD_WIDTH 10
 #define TETRIS_BOARD_HEIGHT 20
-
-#ifndef TETRIMINO_TYPE_COUNT
-#define TETRIMINO_TYPE_COUNT 7
-#endif
 
 typedef struct
 {

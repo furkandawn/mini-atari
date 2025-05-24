@@ -8,6 +8,6 @@
 #ifndef INC_GAME_INIT_H_
 #define INC_GAME_INIT_H_
 
-void game_init(void);
+void handle_menu_playing(void);
 
 #endif /* INC_GAME_INIT_H_ */

@@ -8,10 +8,10 @@
 
 #include "menu_main.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-#include "oled_utils.h"
+// include display library
+#include "display_interface.h"
 
 // include mini-atari libraries
 #include "joystick.h"
@@ -20,7 +20,7 @@
 // include other
 #include <stdint.h>
 
-// includes end <<-----
+// === Includes End ===
 
 const char *menu_main_items[GAME_COUNT] =
 {
@@ -35,14 +35,14 @@ game_type_t current_game_type = GAME_SNAKE;
 
 static void draw_menu_main(uint8_t current_game_type)
 {
-	oled_clear(); // Clear the OLED display
+	display_clear(); // Clear the OLED display
 
     // Display game list
-	oled_write_horizontal_string(">>> GAME MENU <<<", oled_font_7x10, 0, oled_color_white);
+	display_write_horizontal_string(">>> GAME MENU <<<", 0, display_font_7x10, display_color_white);
 
-	oled_draw_vertical_menu(menu_main_items, oled_font_6x8, 15, oled_color_white, &current_game_type, GAME_COUNT);
+	display_draw_vertical_menu(menu_main_items, 15, &current_game_type, GAME_COUNT, display_font_6x8, display_color_white);
 
-    oled_update();  // Refresh OLED screen
+    display_update();  // Refresh OLED screen
 }
 
 static void navigate_menu_main(void)

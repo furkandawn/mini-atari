@@ -8,9 +8,9 @@
 
 #include "game_main.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
+// include display library
 
 
 // include mini-atari libraries
@@ -21,6 +21,7 @@
 #include "game_leaderboard.h"
 #include "menu_gameover.h"
 #include "menu_logic.h"
+#include "game_init.h"
 
 
 // include mini-atari games
@@ -29,7 +30,7 @@
 // include other
 #include <stdbool.h>
 
-// includes end <<-----
+// === Includes End ===
 
 static bool leaderboard_loaded = false;
 
@@ -45,6 +46,7 @@ void game_main(void)
 	{
 	case MENU_MAIN: handle_menu_main(); break;
 	case MENU_SELECTED: handle_menu_selected(); break;
+	case MENU_PLAYING: handle_menu_playing(); break;
 	case MENU_SAVE: handle_menu_save(); break;
 	case MENU_LEADERBOARD: handle_menu_leaderboard(); break;
 	case MENU_GAMEOVER: handle_menu_gameover(); break;

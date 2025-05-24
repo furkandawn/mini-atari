@@ -25,7 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "game_main.h"
-#include "oled_utils.h"
+#include "display_interface.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,7 +92,7 @@ int main(void)
   MX_ADC_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  oled_init(); // Initialize ssd1306 0.96' OLED
+  display_init(); // Initializes display
   /* USER CODE END 2 */
 
   /* Infinite loop */

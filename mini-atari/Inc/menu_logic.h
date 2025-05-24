@@ -10,9 +10,6 @@
 
 #include <stdint.h>
 
-#define BOARD_WIDTH 	128
-#define BOARD_HEIGHT 	64
-
 typedef enum
 {
 	MENU_MAIN = 0,

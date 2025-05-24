@@ -8,10 +8,11 @@
 
 #include "game_bitmap.h"
 
-#include "menu_main.h"
-
-/* const defined arrays stored in flash memory, never copy it to ram memory regarding size */
-const unsigned char game_bitmap[GAME_COUNT][BITMAP_SIZE] =
+/*
+ * const defined arrays stored in flash memory, never copy it to ram memory regarding size
+ * Also bitmaps in this file are full-screen (DISPLAY_BUFFER_SIZE)
+ */
+const unsigned char game_bitmap[GAME_COUNT][DISPLAY_BUFFER_SIZE] =
 {
 		[GAME_SNAKE] =
 		{

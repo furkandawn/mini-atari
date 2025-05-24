@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 #define SAVE_COUNT 3 // enum count
-#define MAX_NAME_LENGTH 11
+
 
 typedef enum
 {
@@ -20,9 +20,7 @@ typedef enum
 	SAVE_EXIT
 } menu_save_action_t;
 
-extern char current_menu_save_name[MAX_NAME_LENGTH];
-
-char get_saved_name(void);
+uint8_t get_name_length(void);
 void handle_menu_save(void);
 
 #endif /* INC_MENU_SAVE_H_ */

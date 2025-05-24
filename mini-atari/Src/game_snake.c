@@ -8,10 +8,11 @@
 
 #include "game_snake.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-#include "oled_utils.h"
+// include display library
+#include "display_interface.h"
+#include "display_config.h"
 
 // include mini-atari libraries
 #include "game_runtime.h"
@@ -20,9 +21,13 @@
 #include "menu_paused.h"
 
 // include other
-#include <stdlib.h> // needed for rand() function
+#include "stm32f0xx_hal.h"
+#include <stdlib.h>		// needed for rand() function
 
-// includes end <<-----
+// === Includes End ===
+
+#define GAME_GRID 4		// 4x4 pixel blocks
+
 
 static void snake_move(game_snake_t *game);
 static void snake_spawn_food(game_snake_t *game);
@@ -52,8 +57,8 @@ static void snake_init(game_snake_t *game)
 
 	for (int i = 0; i < game->length; i++)
 	{
-		game->segments[i].x = (BOARD_WIDTH / 2) - (i * BLOCK_SIZE);
-		game->segments[i].y = (BOARD_HEIGHT / 2);
+		game->segments[i].x = (DISPLAY_WIDTH / 2) - (i * GAME_GRID);
+		game->segments[i].y = (DISPLAY_HEIGHT / 2);
 	}
 
 	snake_spawn_food(game);
@@ -80,7 +85,7 @@ static void snake_update(game_snake_t *game)
 	}
 
 	// snake wall-collapsion
-	if (head.x >= BOARD_WIDTH || head.y >= BOARD_HEIGHT)
+	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT)
 	{
 		game->game_over = true;
 		return;
@@ -123,10 +128,10 @@ static void snake_move(game_snake_t *game)
 	// moves the head
 	switch(game->direction)
 	{
-	case DIRECTION_UP : game->segments[0].y -= BLOCK_SIZE; break;
-	case DIRECTION_DOWN : game->segments[0].y += BLOCK_SIZE; break;
-	case DIRECTION_LEFT : game->segments[0].x -= BLOCK_SIZE; break;
-	case DIRECTION_RIGHT : game->segments[0].x += BLOCK_SIZE; break;
+	case DIRECTION_UP : game->segments[0].y -= GAME_GRID; break;
+	case DIRECTION_DOWN : game->segments[0].y += GAME_GRID; break;
+	case DIRECTION_LEFT : game->segments[0].x -= GAME_GRID; break;
+	case DIRECTION_RIGHT : game->segments[0].x += GAME_GRID; break;
 	case DIRECTION_NONE : break;
 	default: break;
 	}
@@ -139,9 +144,9 @@ static void snake_spawn_food(game_snake_t *game)
 
 	while (!valid)
 	{
-		// we use ...* BLOCK_SIZE to avoid food spawning on locations that snake cannot pass through
-		uint8_t x = (rand() % (BOARD_WIDTH / BLOCK_SIZE)) * BLOCK_SIZE;
-		uint8_t y = (rand() % (BOARD_HEIGHT / BLOCK_SIZE)) * BLOCK_SIZE;
+		// we use ...* GAME_GRID to avoid food spawning on locations that snake cannot pass through
+		uint8_t x = (rand() % (DISPLAY_WIDTH / GAME_GRID)) * GAME_GRID;
+		uint8_t y = (rand() % (DISPLAY_HEIGHT / GAME_GRID)) * GAME_GRID;
 
 		valid = true;
 
@@ -166,19 +171,19 @@ static void snake_spawn_food(game_snake_t *game)
 
 static void snake_draw(const game_snake_t *game)
 {
-	oled_clear();
+	display_clear();
 
-	oled_draw_rectangle(0, 0, BOARD_WIDTH - 1, BOARD_HEIGHT - 1, oled_color_white);
+	display_draw_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, display_color_white);
 
 	// draw food
-	oled_fill_square(game->food.x, game->food.y, BLOCK_SIZE, oled_color_white);
+	display_fill_square(game->food.x, game->food.y, GAME_GRID, display_color_white);
 
 	// draw snake
 	uint8_t i = 0;
 	for (i = 0; i < game->length; i++) // draw whole body
 	{
-		oled_fill_square(game->segments[i].x, game->segments[i].y, BLOCK_SIZE, oled_color_white);
+		display_fill_square(game->segments[i].x, game->segments[i].y, GAME_GRID, display_color_white);
 	}
 
-	oled_update();
+	display_update();
 }

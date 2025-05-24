@@ -8,10 +8,6 @@
 #ifndef INC_MENU_MAIN_H_
 #define INC_MENU_MAIN_H_
 
-#ifndef GAME_COUNT
-#define GAME_COUNT 5
-#endif
-
 typedef enum
 {
 	GAME_SNAKE = 0,
@@ -19,6 +15,7 @@ typedef enum
 	GAME_3,
 	GAME_4,
 	GAME_5,
+	GAME_COUNT
 } game_type_t;
 
 extern game_type_t current_game_type;

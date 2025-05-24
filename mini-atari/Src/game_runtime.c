@@ -8,9 +8,9 @@
 
 #include "game_runtime.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
+// include display library
 
 // include mini-atari libraries
 #include "menu_main.h"
@@ -21,8 +21,9 @@
 #include "stm32f0xx_hal.h"
 #include "stm32f0xx_hal_conf.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
-// includes end <<-----
+// === Includes End ===
 
 game_runtime_t game_runtime = {0};
 
@@ -44,6 +45,9 @@ void game_reset_configs(game_type_t type)
 	start_time_ms = HAL_GetTick(); // Starts measuring time
 	time_reset = false;
 	frozen_time = 0;
+
+	// RNG for game randomness
+	srand(HAL_GetTick());
 }
 
 /* Update score, level and delay */

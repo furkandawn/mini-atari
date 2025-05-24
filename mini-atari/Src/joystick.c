@@ -10,12 +10,12 @@
 
 #define DEBOUNCE_DELAY_MS 50
 #define AXIS_MAX_VALUE 4095
-// ----->> includes start
+// === Includes Start ===
 
 #include "adc.h"
 #include "gpio.h"
 
-// includes end <<-----
+// === Includes End ===
 
 extern ADC_HandleTypeDef hadc;
 

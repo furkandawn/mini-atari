@@ -8,10 +8,10 @@
 
 #include "game_leaderboard.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-
+// include Display library
+#include "display_interface.h"
 
 // include mini-atari libraries
 #include "menu_save.h"
@@ -27,27 +27,21 @@
 #include "stm32f0xx_hal.h"
 #include "stm32f0xx_hal_flash.h"
 
-// includes end <<-----
+// === Includes End ===
 
 #define FLASH_PAGE_63_ADDRESS 0x0800FC00	// STM32F030R8T6 PAGE NUMBER 63 ADRESS, !!! CHECK YOUR OWN MICROCONTROLLER INFO
+#define FLASH_LEADERBOARD_PAGE_SIZE 1024	// flash page size of microcontroller
 #define LEADERBOARD_FLASH_ADRESS FLASH_PAGE_63_ADDRESS
 
 static void save_leaderboard_to_flash(void);
 
 // main data structure holding leaderboard entries for all games
-leaderboard_entry_t leaderboard[GAME_COUNT][LEADERBOARD_COUNT] =
-{
-		0
-};
+leaderboard_entry_t leaderboard[GAME_COUNT][LEADERBOARD_COUNT] = {0};
 
 // pointer array for UI rendering only
-const char *menu_leaderboard_entries[GAME_COUNT][LEADERBOARD_TOTAL_COUNT] =
-{
-		0
-};
+const char *menu_leaderboard_entries[GAME_COUNT][LEADERBOARD_TOTAL_COUNT] = {0};
 
-
-/* LEADERBOARD ALGORITHMS */
+/* MANIPULATE LEADERBOARD STRUCTURE */
 
 static void sort_leaderboard(leaderboard_entry_t *entry)
 {
@@ -81,6 +75,9 @@ bool is_entry_empty(const leaderboard_entry_t *entry)
 {
 	const uint8_t *bytes = (const uint8_t *)entry;
 
+	// no names - 0 scores
+	if (entry->name[0] == '\0' || entry->score == 0 || entry->time_passed == 0) return true;
+
 	// since my structure is 16 bytes, i used uint8_t (255 max)
 	for (uint8_t i = 0; i < sizeof(leaderboard_entry_t); i++)
 	{
@@ -94,9 +91,6 @@ bool is_entry_empty(const leaderboard_entry_t *entry)
 
 static void save_leaderboard_to_flash(void)
 {
-
-	__disable_irq(); // Disable interrupts temporarily
-
 	HAL_FLASH_Unlock();
 
 	// erase the page
@@ -110,8 +104,8 @@ static void save_leaderboard_to_flash(void)
 	uint32_t page_error;
 	if(HAL_FLASHEx_Erase(&erase, &page_error) != HAL_OK)
 	{
+		// error msg
 		HAL_FLASH_Lock();
-		__enable_irq();
 		return;
 	}
 
@@ -126,23 +120,37 @@ static void save_leaderboard_to_flash(void)
 
 			for (uint8_t j = 0; j < sizeof(leaderboard_entry_t); j += 4)
 			{
-				uint32_t word = *(uint32_t *)(data + j);
+				uint32_t word;
+				memcpy(&word, data + j, sizeof(word));
+
 				if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, flash_adress, word) != HAL_OK)
 				{
+					// error msg
+					display_clear();
+					display_write_centered_string("!= HAL_OK N 1", display_font_7x10, display_color_white);
+					display_update();
+					HAL_Delay(5000);
 					HAL_FLASH_Lock();
-					__enable_irq();
 					return;
 				}
+
+				if (flash_adress >= LEADERBOARD_FLASH_ADRESS + FLASH_LEADERBOARD_PAGE_SIZE)
+				{
+					// error msg
+					display_clear();
+					display_write_centered_string("REACHED PAGE END", display_font_7x10, display_color_white);
+					display_update();
+					HAL_Delay(5000);
+					break;
+					HAL_FLASH_Lock();
+				}
+
 				flash_adress += 4;
 			}
 		}
 	}
-
 	HAL_FLASH_Lock();
-
-	__enable_irq(); // enables interrupts again
 }
-
 
 /* PUBLIC API FUNCTIONS */
 
@@ -162,6 +170,8 @@ void add_leaderboard_entry(game_type_t game, const char *name, uint16_t score, u
 	entries[LEADERBOARD_COUNT - 1] = new_entry;
 
 	sort_leaderboard(entries);
+
+	// manually delete entry memset(&leaderboard[GAME_TETRIS][0], 0xFF, sizeof(leaderboard_entry_t));
 
 	update_menu_leaderboard_entries(game);
 
@@ -189,8 +199,6 @@ void load_leaderbord_from_flash(void)
 	}
 }
 
-
-// LOGIC HANDLERS
 
 bool is_score_eligible(game_type_t game, uint16_t score)
 {

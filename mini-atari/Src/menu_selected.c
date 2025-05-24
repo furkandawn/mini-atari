@@ -8,10 +8,10 @@
 
 #include "menu_selected.h"
 
-// ----->> includes start
+// === Includes Start ===
 
-// include OLED Display library
-#include "oled_utils.h"
+// include display library
+#include "display_interface.h"
 
 // include mini-atari libraries
 #include "game_init.h"
@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <ctype.h>
 
-// includes end <<-----
+// === Includes End ===
 
 static void to_upper_string(char *str);
 
@@ -42,18 +42,18 @@ menu_selected_action_t current_menu_selected_action = ACTION_START;
 
 static void menu_selected_draw(uint8_t current_menu_selected_action)
 {
-	oled_clear(); // Clears the OLED display
+	display_clear(); // Clears the OLED display
 
 	// Display game name
 	char buffer[32];
 	snprintf(buffer, sizeof(buffer), ">_ %s _<", menu_main_items[current_game_type]);
 	to_upper_string(buffer);
-	oled_write_horizontal_string(buffer, oled_font_7x10, 0, oled_color_white);
+	display_write_horizontal_string(buffer, 0, display_font_7x10, display_color_white);
 
 	// Display actions
-	oled_draw_vertical_menu(menu_selected_items, oled_font_7x10, 20, oled_color_white, &current_menu_selected_action, ACTION_COUNT);
+	display_draw_vertical_menu(menu_selected_items, 20, &current_menu_selected_action, ACTION_COUNT, display_font_7x10, display_color_white);
 
-    oled_update(); // Refreshes the OLED screen
+    display_update(); // Refreshes the OLED screen
 }
 
 static void navigate_menu_selected(void)
@@ -70,8 +70,7 @@ static void handle_current_menu_selected_action(void)
 	{
 	case ACTION_START:
 	{
-		if(current_game_type == GAME_SNAKE) {current_menu_state = MENU_PLAYING;
-		game_init();}
+		current_menu_state = MENU_PLAYING;
 		break;
 	}
 	case ACTION_LEADERBOARD:
