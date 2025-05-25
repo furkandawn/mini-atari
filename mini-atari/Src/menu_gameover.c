@@ -40,8 +40,7 @@ gameover_action_t current_menu_gameover_action = GAMEOVER_PLAY_AGAIN;
 bool animation_shown = false; // to draw game over screen animated, resets every start up of a game in "game_start.c"
 
 
-
-// gameover screen draw functions
+// === Draw functions === //
 
 static void draw_animated_menu_gameover(void)
 {
@@ -85,7 +84,7 @@ static void navigate_menu_gameover(void)
 }
 
 
-// Logic handlers of gameover menu
+// === Logic handlers === //
 
 static void handle_current_menu_gameover_action(void)
 {
@@ -100,7 +99,6 @@ static void handle_current_menu_gameover_action(void)
 		{
 			current_menu_state = MENU_MAIN;
 			current_game_type = GAME_SNAKE;
-			current_menu_selected_action = ACTION_START;
 			current_menu_gameover_action = GAMEOVER_PLAY_AGAIN;
 			break;
 		}
@@ -119,11 +117,14 @@ static void handle_current_menu_gameover_action(void)
 void handle_menu_gameover(void)
 {
 	game_get_time_spent();
+
 	if (!animation_shown)
 	{
 		draw_animated_menu_gameover();
 		animation_shown = true;
 	}
+
 	navigate_menu_gameover();
+
 	if(joystick_is_pressed() || button_is_pressed()) handle_current_menu_gameover_action();
 }

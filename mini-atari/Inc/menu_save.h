@@ -10,14 +10,12 @@
 
 #include <stdint.h>
 
-#define SAVE_COUNT 3 // enum count
-
-
 typedef enum
 {
 	SAVE_SAVE = 0,
 	SAVE_BKSP,
-	SAVE_EXIT
+	SAVE_EXIT,
+	SAVE_COUNT
 } menu_save_action_t;
 
 uint8_t get_name_length(void);

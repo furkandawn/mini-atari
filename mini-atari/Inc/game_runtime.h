@@ -30,5 +30,6 @@ uint16_t game_get_score(void);
 uint8_t game_get_level(void);
 uint8_t game_get_delay_ms(void);
 uint16_t game_get_time_spent(void);
+uint16_t game_get_continous_time(void);
 
 #endif /* INC_GAME_RUNTIME_H_ */

@@ -20,6 +20,7 @@
 
 // include mini-atari games
 #include "game_snake.h"
+#include "game_tetris.h"
 
 // include other
 
@@ -35,11 +36,13 @@ static void game_init(void)
 		snake_game(&game);
 		break;
 	}
-	/* to do: complete other games
 	case GAME_TETRIS:
 	{
+		game_tetris_t game;
+		game_tetris(&game);
 		break;
 	}
+	/* to do: complete other games
 	case GAME_3:
 	{
 		break;

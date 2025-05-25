@@ -16,10 +16,11 @@
 
 typedef struct
 {
-	uint8_t x, y;		// x & y position of the active tetrimino. (top left position).
+	int8_t x, y;		// x & y position of the active tetrimino. (top left position).
 	uint8_t rotation;	// tetrimino rotated version
 	uint8_t type;		// tetrimino type
 } game_tetris_t;
 
+void game_tetris(game_tetris_t *game);
 
 #endif /* INC_GAME_TETRIS_H_ */

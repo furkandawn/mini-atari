@@ -10,13 +10,12 @@
 
 #include <stdbool.h>
 
-#define GAMEOVER_COUNT 3	// enum count
-
 typedef enum
 {
 	GAMEOVER_PLAY_AGAIN = 0,
 	GAMEOVER_MAIN_MENU,
-	GAMEOVER_SAVE
+	GAMEOVER_SAVE,
+	GAMEOVER_COUNT
 } gameover_action_t;
 
 extern gameover_action_t current_menu_gameover_action;

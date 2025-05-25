@@ -17,7 +17,7 @@ typedef struct
 	uint16_t min_delay_ms;
 	uint8_t delay_decrement;
 	uint8_t score_per_action;
-	uint8_t score_per_level;
+	uint8_t score_for_level;
 	uint8_t max_level;
 } game_config_t;
 

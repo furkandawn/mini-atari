@@ -12,9 +12,9 @@
 
 typedef enum
 {
-	ACTION_START = 0,
-	ACTION_LEADERBOARD,
-	ACTION_BACK
+	SELECTED_ACTION_START = 0,
+	SELECTED_ACTION_LEADERBOARD,
+	SELECTED_ACTION_BACK
 } menu_selected_action_t;
 
 extern menu_selected_action_t current_menu_selected_action;

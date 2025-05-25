@@ -35,7 +35,7 @@ static const char *menu_selected_items[ACTION_COUNT] =
 		"Main Menu"
 };
 
-menu_selected_action_t current_menu_selected_action = ACTION_START;
+menu_selected_action_t current_menu_selected_action = SELECTED_ACTION_START;
 
 
 // Draw functions of selected menu
@@ -68,20 +68,20 @@ static void handle_current_menu_selected_action(void)
 {
 	switch (current_menu_selected_action)
 	{
-	case ACTION_START:
+	case SELECTED_ACTION_START:
 	{
 		current_menu_state = MENU_PLAYING;
 		break;
 	}
-	case ACTION_LEADERBOARD:
+	case SELECTED_ACTION_LEADERBOARD:
 	{
 		current_menu_state = MENU_LEADERBOARD;
 		break;
 	}
-	case ACTION_BACK:
+	case SELECTED_ACTION_BACK:
 	{
 		current_menu_state = MENU_MAIN;
-		current_menu_selected_action = ACTION_START;
+		current_menu_selected_action = SELECTED_ACTION_START;
 		current_game_type = GAME_SNAKE;
 		break;
 	}

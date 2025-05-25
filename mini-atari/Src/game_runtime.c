@@ -29,6 +29,7 @@ bool game_over = false;
 static uint32_t start_time_ms = 0;
 static bool time_reset = false;
 static uint16_t frozen_time = 0;
+static uint16_t continous_time = 0;
 
 /* Game initialization */
 void game_reset_configs(game_type_t type)
@@ -44,6 +45,7 @@ void game_reset_configs(game_type_t type)
 	start_time_ms = HAL_GetTick(); // Starts measuring time
 	time_reset = false;
 	frozen_time = 0;
+	continous_time = 0;
 
 	// RNG for game randomness
 	srand(HAL_GetTick());
@@ -55,7 +57,7 @@ void game_update_progress(void)
 	const game_config_t *cfg = &game_configs[game_runtime.game_type];
 	game_runtime.score += cfg->score_per_action;
 
-	if (game_runtime.score >= game_runtime.level * cfg->score_per_level && game_runtime.level < cfg->max_level)
+	if (game_runtime.score >= game_runtime.level * cfg->score_for_level && game_runtime.level < cfg->max_level)
 	{
 		game_runtime.level++;
 		game_draw_level_screen();
@@ -91,4 +93,11 @@ uint16_t game_get_time_spent(void)
 	}
 
 	return frozen_time;
+}
+
+uint16_t game_get_continous_time(void)
+{
+	continous_time = (HAL_GetTick() - start_time_ms) / 1000; // converts ms to seconds
+
+	return continous_time;
 }

@@ -30,11 +30,9 @@
 
 // === Includes End ===
 
-#define ALPHABET_COUNT 26
-
 typedef enum
 {
-	A = 0, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
+	A = 0, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, ALPHABET_COUNT
 } menu_save_alphabet_t;
 
 static const char *menu_save_items[] =

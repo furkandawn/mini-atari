@@ -101,6 +101,7 @@ static void snake_update(game_snake_t *game)
 	}
 
 	HAL_Delay(game_get_delay_ms());
+	// to do : don't use hal_delay
 }
 
 static void snake_move(game_snake_t *game)
