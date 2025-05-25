@@ -62,24 +62,48 @@ joystick_direction_t joystick_direction(void)
 
 bool joystick_is_pressed(void)
 {
-	static uint32_t last_press_time = 0;
-	static bool was_pressed_last_time = false;
+	static uint32_t joystick_last_press_time = 0;
+	static bool joystick_was_pressed_last_time = false;
 
 	bool is_currently_pressed = (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3) == GPIO_PIN_RESET);
 
-	if (is_currently_pressed && !was_pressed_last_time)
+	if (is_currently_pressed && !joystick_was_pressed_last_time)
 	{
 		uint32_t current_time = HAL_GetTick();
-		if (current_time - last_press_time > DEBOUNCE_DELAY_MS)
+		if (current_time - joystick_last_press_time > DEBOUNCE_DELAY_MS)
 		{
-			last_press_time = current_time;
-			was_pressed_last_time = true;
+			joystick_last_press_time = current_time;
+			joystick_was_pressed_last_time = true;
 			return true;
 		}
 	}
 	else if(!is_currently_pressed)
 	{
-		was_pressed_last_time = false;
+		joystick_was_pressed_last_time = false;
+	}
+	return false;
+}
+
+bool button_is_pressed(void)
+{
+	static uint32_t button_last_press_time = 0;
+	static bool button_was_pressed_last_time = false;
+
+	bool is_currently_pressed = (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == GPIO_PIN_RESET);
+
+	if (is_currently_pressed && !button_was_pressed_last_time)
+	{
+		uint32_t current_time = HAL_GetTick();
+		if (current_time - button_last_press_time > DEBOUNCE_DELAY_MS)
+		{
+			button_last_press_time = current_time;
+			button_was_pressed_last_time = true;
+			return true;
+		}
+	}
+	else if(!is_currently_pressed)
+	{
+		button_was_pressed_last_time = false;
 	}
 	return false;
 }

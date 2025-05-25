@@ -95,7 +95,7 @@ static void handle_current_menu_selected_action(void)
 void handle_menu_selected(void)
 {
 	navigate_menu_selected();
-	if (joystick_is_pressed()) handle_current_menu_selected_action();
+	if (joystick_is_pressed() || button_is_pressed()) handle_current_menu_selected_action();
 }
 
 

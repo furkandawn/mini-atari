@@ -174,7 +174,7 @@ static void handle_not_eligible(void)
 {
 	bool drawn_once = false;
 
-	while (!joystick_is_pressed())
+	while (!joystick_is_pressed() || button_is_pressed())
 	{
 		if (!drawn_once)
 		{
@@ -229,11 +229,11 @@ void handle_menu_save(void)
 	if (is_letter_focused)
 	{
 		navigate_menu_save_alphabet();
-		if (joystick_is_pressed()) handle_selected_letter_input();
+		if (joystick_is_pressed() || button_is_pressed()) handle_selected_letter_input();
 	}
 	else
 	{
 		navigate_menu_save_actions();
-		if (joystick_is_pressed()) handle_current_menu_save_action();
+		if (joystick_is_pressed() || button_is_pressed()) handle_current_menu_save_action();
 	}
 }

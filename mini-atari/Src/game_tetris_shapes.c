@@ -8,19 +8,6 @@
 
 #include "game_tetris_shapes.h"
 
-// === Includes Start ===
-
-// include display library
-
-
-// include mini-atari libraries
-
-
-// include other
-
-
-// === Includes End ===
-
 tetrimino_type_t current_tetrimino = TETRIMINO_I;
 
 const tetrimino tetriminos[TETRIMINO_TYPE_COUNT] =

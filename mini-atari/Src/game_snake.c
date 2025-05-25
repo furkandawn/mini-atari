@@ -21,8 +21,8 @@
 #include "menu_paused.h"
 
 // include other
-#include "stm32f0xx_hal.h"
-#include <stdlib.h>		// needed for rand() function
+#include "stm32f0xx_hal.h"	//	For HAL_Delay()
+#include <stdlib.h>			//	For rand()
 
 // === Includes End ===
 
@@ -39,9 +39,8 @@ void snake_game(game_snake_t *game)
 {
 	snake_init(game);
 
-	while(!game->game_over && current_menu_state == MENU_PLAYING)
+	while(!game_over && current_menu_state == MENU_PLAYING)
 	{
-		snake_draw(game);
 		snake_update(game);
 	}
 
@@ -53,7 +52,6 @@ static void snake_init(game_snake_t *game)
 {
 	game->length = 3;
 	game->direction = DIRECTION_RIGHT;
-	game->game_over = false;
 
 	for (int i = 0; i < game->length; i++)
 	{
@@ -66,8 +64,9 @@ static void snake_init(game_snake_t *game)
 
 static void snake_update(game_snake_t *game)
 {
-	if (joystick_is_pressed()) game_pause();
-	if (game->game_over || current_menu_state != MENU_PLAYING) return;
+	snake_draw(game);
+	if (joystick_is_pressed() || button_is_pressed()) game_pause();
+	if (game_over || current_menu_state != MENU_PLAYING) return;
 
 	snake_move(game);
 
@@ -87,7 +86,7 @@ static void snake_update(game_snake_t *game)
 	// snake wall-collapsion
 	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT)
 	{
-		game->game_over = true;
+		game_over = true;
 		return;
 	}
 
@@ -96,7 +95,7 @@ static void snake_update(game_snake_t *game)
 	{
 		if (head.x == game->segments[i].x && head.y == game->segments[i].y)
 		{
-			game->game_over = true;
+			game_over = true;
 			break;
 		}
 	}
@@ -132,7 +131,6 @@ static void snake_move(game_snake_t *game)
 	case DIRECTION_DOWN : game->segments[0].y += GAME_GRID; break;
 	case DIRECTION_LEFT : game->segments[0].x -= GAME_GRID; break;
 	case DIRECTION_RIGHT : game->segments[0].x += GAME_GRID; break;
-	case DIRECTION_NONE : break;
 	default: break;
 	}
 }

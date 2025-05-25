@@ -13,19 +13,17 @@
 // include display library
 
 // include mini-atari libraries
-#include "menu_main.h"
-#include "game_config.h"
 #include "game_ui.h"
 
 // include other
 #include "stm32f0xx_hal.h"
 #include "stm32f0xx_hal_conf.h"
-#include <stdbool.h>
 #include <stdlib.h>
 
 // === Includes End ===
 
 game_runtime_t game_runtime = {0};
+bool game_over = false;
 
 // in-game time spent related variables
 static uint32_t start_time_ms = 0;
@@ -40,6 +38,7 @@ void game_reset_configs(game_type_t type)
 	game_runtime.score = 0;
 	game_runtime.level = 1;
 	game_runtime.delay_ms = game_configs[type].initial_delay_ms;
+	game_over = false;
 
 	// in-game time spent
 	start_time_ms = HAL_GetTick(); // Starts measuring time

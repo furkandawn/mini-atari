@@ -27,7 +27,6 @@ typedef struct
 	uint8_t length;  // snake length
 	joystick_direction_t direction;  // snake direction
 	point_t food;  // location of bait
-	bool game_over;  // current game state
 } game_snake_t;
 
 void snake_game(game_snake_t *game);

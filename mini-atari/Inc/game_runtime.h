@@ -10,6 +10,7 @@
 
 #include "game_config.h"
 #include "menu_main.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef struct
@@ -21,6 +22,7 @@ typedef struct
 } game_runtime_t;
 
 extern game_runtime_t game_runtime;
+extern bool game_over;
 
 void game_reset_configs(game_type_t type);
 void game_update_progress(void);

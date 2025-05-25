@@ -8,17 +8,6 @@
 
 #include "game_config.h"
 
-// === Includes Start ===
-
-// include display library
-
-// include mini-atari libraries
-#include "menu_main.h"
-
-// include other
-
-// === Includes End ===
-
 const game_config_t game_configs[GAME_COUNT] =
 {
 		[GAME_SNAKE] =

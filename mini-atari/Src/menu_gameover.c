@@ -125,5 +125,5 @@ void handle_menu_gameover(void)
 		animation_shown = true;
 	}
 	navigate_menu_gameover();
-	if(joystick_is_pressed()) handle_current_menu_gameover_action();
+	if(joystick_is_pressed() || button_is_pressed()) handle_current_menu_gameover_action();
 }

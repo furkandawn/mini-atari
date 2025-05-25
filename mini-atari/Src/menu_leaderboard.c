@@ -73,7 +73,7 @@ void handle_menu_leaderboard(void)
 {
 	navigate_menu_leaderboard();
 
-	if (joystick_is_pressed())
+	if (joystick_is_pressed() || button_is_pressed())
 	{
 		if (current_leaderboard_entry_index == LEADERBOARD_TOTAL_COUNT - 1)
 		{
@@ -93,7 +93,7 @@ void handle_menu_leaderboard(void)
 					drawn_once = true;
 				}
 
-				if (joystick_is_pressed())
+				if (joystick_is_pressed() || button_is_pressed())
 				{
 					leaderboard_entry_focused = false;
 					current_menu_state = MENU_LEADERBOARD;

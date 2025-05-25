@@ -74,7 +74,7 @@ static void handle_current_menu_paused_action(void)
 static void handle_menu_paused(void)
 {
 	navigate_menu_paused();
-	if (joystick_is_pressed()) handle_current_menu_paused_action();
+	if (joystick_is_pressed() || button_is_pressed()) handle_current_menu_paused_action();
 }
 
 void game_pause(void)
