@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
 /**
  * The joystick i use generates analog input which then converted to digital between 0 and 4095.
  */

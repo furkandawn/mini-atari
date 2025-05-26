@@ -8,7 +8,7 @@
 #ifndef INC_GAME_LEADERBOARD_H_
 #define INC_GAME_LEADERBOARD_H_
 
-#include "menu_main.h"
+#include "menu_interface.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -28,7 +28,7 @@ typedef struct
 	uint8_t _padding;		// padding to align to 16 bytes
 } leaderboard_entry_t;
 
-extern leaderboard_entry_t leaderboard[GAME_COUNT][LEADERBOARD_COUNT];
+extern leaderboard_entry_t current_leaderboard[GAME_COUNT][LEADERBOARD_COUNT];
 extern const char *menu_leaderboard_entries[GAME_COUNT][LEADERBOARD_TOTAL_COUNT];
 
 void load_leaderbord_from_flash(void);

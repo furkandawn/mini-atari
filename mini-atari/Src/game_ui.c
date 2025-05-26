@@ -8,8 +8,7 @@
 
 #include "game_ui.h"
 
-// === Includes Start ===
-
+// ===== Includes ===== //
 // include display library
 #include "display_interface.h"
 
@@ -22,10 +21,10 @@
 #include <stdio.h>
 #include "stm32f0xx_hal.h"
 
-// === Includes End ===
-
+// ======= Macros/Constants ===== //
 #define COUNTDOWN 3
 
+// ===== Public API Function Definitions ===== //
 void game_draw_start_screen(void)
 {
 	// Draws bitmap

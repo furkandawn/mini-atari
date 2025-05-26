@@ -8,10 +8,7 @@
 
 #include "game_runtime.h"
 
-// === Includes Start ===
-
-// include display library
-
+// ===== Includes ===== //
 // include mini-atari libraries
 #include "game_ui.h"
 
@@ -20,18 +17,23 @@
 #include "stm32f0xx_hal_conf.h"
 #include <stdlib.h>
 
-// === Includes End ===
+// ======= Macros/Constants ===== //
+// ----- //
 
-game_runtime_t game_runtime = {0};
-bool game_over = false;
-
+// ===== Static File-Private Variables ===== //
 // in-game time spent related variables
 static uint32_t start_time_ms = 0;
 static bool time_reset = false;
 static uint16_t frozen_time = 0;
 static uint16_t continous_time = 0;
 
-/* Game initialization */
+// ===== Public Global Variables ===== //
+game_runtime_t game_runtime = {0};
+bool game_over = false;
+
+// ===== Public API Function Definitions ===== //
+
+// Initializes Game Configs
 void game_reset_configs(game_type_t type)
 {
 	// game configurations
@@ -51,7 +53,7 @@ void game_reset_configs(game_type_t type)
 	srand(HAL_GetTick());
 }
 
-/* Update score, level and delay */
+// Updates score, level and in-game delay
 void game_update_progress(void)
 {
 	const game_config_t *cfg = &game_configs[game_runtime.game_type];
@@ -68,6 +70,8 @@ void game_update_progress(void)
 		}
 	}
 }
+
+// Getter Functions
 
 uint16_t game_get_score(void)
 {

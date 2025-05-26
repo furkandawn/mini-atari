@@ -8,33 +8,31 @@
 
 #include "game_tetris.h"
 
-
-// === Includes Start === //
-
+// ===== Includes ===== //
 // include display library
 #include "display_interface.h"
 
 // include mini-atari libraries
 #include "game_tetris_shapes.h"
-#include "joystick.h"
-#include "game_runtime.h"
+#include "menu_interface.h"
 #include "menu_logic.h"
-#include "menu_paused.h"
+#include "game_runtime.h"
+#include "joystick.h"
 
 // include other
-#include "stm32f0xx_hal.h"
-#include <stdlib.h>		// needed for rand() function
+#include "stm32f0xx_hal.h"	// for Hal_GetTick(), Hal_Delay()
+#include <stdlib.h>			// for rand()
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-// === Includes End === //
-
-#define GAME_GRID 3		// 3x3 pixel blocks
+// ======= Macros/Constants ===== //
+#define GAME_GRID 3					// 3x3 pixel blocks
 #define GAME_OFFSET GAME_GRID
 #define GAME_START_POSITION_X 0
 #define INPUT_DELAY_MS 50
 
+// ===== Static File-Private Variables ===== //
 static uint8_t board[TETRIS_BOARD_HEIGHT][TETRIS_BOARD_WIDTH] = {0};
 static uint8_t next_tetrimino_index;
 
@@ -42,11 +40,24 @@ static uint8_t next_tetrimino_index;
 static uint32_t last_update;
 static uint32_t last_input;
 
+// ===== Public Global Variables ===== //
+
+// ===== Static Function Declarations ===== //
+static void tetris_draw_board(void);
+static void draw_next_tetrimino(uint8_t x, uint8_t y);
+static void tetris_draw_stats(void);
+static void tetrimino_draw(game_tetris_t *game);
+static void tetris_draw(game_tetris_t *game);
+static void tetrimino_spawn(game_tetris_t *game);
+static bool tetrimino_can_move(game_tetris_t *game, uint8_t dx, uint8_t dy);
+static void tetrimino_move(game_tetris_t *game);
+static void tetrimino_rotate(game_tetris_t *game);
+static void tetrimino_land(game_tetris_t *game);
+static void tetris_clear_line(void);
 static void tetris_init(game_tetris_t *game);
 static void tetris_update(game_tetris_t *game);
-static bool tetrimino_can_move(game_tetris_t *game, uint8_t dx, uint8_t dy);
 
-
+// ===== Public API Function Definitions ===== //
 void game_tetris(game_tetris_t *game)
 {
 	tetris_init(game);
@@ -60,7 +71,9 @@ void game_tetris(game_tetris_t *game)
 	current_menu_state = MENU_GAMEOVER;
 }
 
-/* menu and outline draw functions */
+// ===== Static Function Definitions ===== //
+
+// Draw Functions
 static void tetris_draw_board(void)
 {
 	for (uint8_t i = 0; i < GAME_GRID; i++)
@@ -74,21 +87,6 @@ static void tetris_draw_board(void)
 		for (uint8_t x = 0; x < TETRIS_BOARD_WIDTH; x++)
 		{
 			if (board[y][x]) display_fill_square(((x * GAME_GRID) + GAME_OFFSET), (y * GAME_GRID), GAME_GRID, display_color_white);
-		}
-	}
-}
-
-static void draw_next_tetrimino(uint8_t x, uint8_t y)
-{
-	for (uint8_t i = 0; i < TETRIMINO_SIZE; i++)
-	{
-		for (uint8_t j = 0; j < TETRIMINO_SIZE; j++)
-		{
-			if (!tetriminos[next_tetrimino_index].rotation[0][i][j]) continue;
-
-			uint8_t draw_x = (x + (j * GAME_GRID));
-			uint8_t draw_y = (y + (i * GAME_GRID));
-			display_fill_square(draw_x, draw_y, GAME_GRID, display_color_white);
 		}
 	}
 }
@@ -114,7 +112,21 @@ static void tetris_draw_stats(void)
 	snprintf(buffer, sizeof(buffer), "TIME %d", game_get_continous_time());
 	display_set_cursor(x, y);
 	display_write_string(buffer, display_font_7x10, display_color_white);
+}
 
+static void draw_next_tetrimino(uint8_t x, uint8_t y)
+{
+	for (uint8_t i = 0; i < TETRIMINO_SIZE; i++)
+	{
+		for (uint8_t j = 0; j < TETRIMINO_SIZE; j++)
+		{
+			if (!tetriminos[next_tetrimino_index].rotation[0][i][j]) continue;
+
+			uint8_t draw_x = (x + (j * GAME_GRID));
+			uint8_t draw_y = (y + (i * GAME_GRID));
+			display_fill_square(draw_x, draw_y, GAME_GRID, display_color_white);
+		}
+	}
 }
 
 static void tetrimino_draw(game_tetris_t *game)
@@ -141,6 +153,17 @@ static void tetris_draw(game_tetris_t *game)
 	tetrimino_draw(game);
 
 	display_update();
+}
+
+// Game Logic
+
+static void tetris_init(game_tetris_t *game)
+{
+	memset(board, 0, sizeof(board));
+	last_update = HAL_GetTick();
+	last_input = HAL_GetTick();
+	next_tetrimino_index = rand() % TETRIMINO_TYPE_COUNT;
+	tetrimino_spawn(game);
 }
 
 static void tetrimino_spawn(game_tetris_t *game)
@@ -181,7 +204,7 @@ static bool tetrimino_can_move(game_tetris_t *game, uint8_t dx, uint8_t dy)
 	return true;
 }
 
-static void tetrimino_move(game_tetris_t *game)	// to do: check placed tetriminos to move. Currently it can move through blocks
+static void tetrimino_move(game_tetris_t *game)
 {
 	joystick_direction_t dir = joystick_direction();
 
@@ -261,16 +284,6 @@ static void tetris_clear_line(void)
 			y++;
 		}
 	}
-}
-
-
-static void tetris_init(game_tetris_t *game)
-{
-	memset(board, 0, sizeof(board));
-	last_update = HAL_GetTick();
-	last_input = HAL_GetTick();
-	next_tetrimino_index = rand() % TETRIMINO_TYPE_COUNT;
-	tetrimino_spawn(game);
 }
 
 static void tetris_update(game_tetris_t *game)

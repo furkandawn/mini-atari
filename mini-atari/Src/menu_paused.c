@@ -8,31 +8,50 @@
 
 #include "menu_paused.h"
 
-// === Includes Start ===
-
+// ===== Includes ===== //
 // include display library
 #include "display_interface.h"
 
 // include mini-atari libraries
-#include "joystick.h"
+#include "menu_interface.h"
 #include "menu_logic.h"
+#include "joystick.h"
 
 // include other
 #include <stdint.h>
 #include "stm32f0xx_hal.h"
 
-// === Includes End ===
+// ======= Macros/Constants ===== //
+// ----- //
 
+// ===== Static File-Private Variables ===== //
 static const char *menu_paused_items[PAUSED_COUNT] =
 {
 		"Continue",
 		"Exit"
 };
 
-static menu_paused_action_t current_menu_paused_action = PAUSED_CONTINUE;
+static paused_action_t current_menu_paused_action = PAUSED_CONTINUE;
 
+// ===== Public Global Variables ===== //
+// ----- //
 
-// Draw functions of Pause Menu
+// ===== Static Function Declarations ===== //
+static void handle_menu_paused(void);
+
+// ===== Public API Function Definitions ===== //
+void game_pause(void)
+{
+	HAL_Delay(500);
+	current_menu_state = MENU_PAUSED;
+	while (current_menu_state == MENU_PAUSED)
+	{
+		handle_menu_paused();
+	}
+}
+
+// ===== Static Function Definitions ===== //
+// Draw Functions
 
 static void draw_menu_paused(uint8_t current_menu_paused_action)
 {
@@ -50,7 +69,7 @@ static void navigate_menu_paused(void)
 }
 
 
-// Logic handlers of pause menu
+// Logic Handlers
 
 static void handle_current_menu_paused_action(void)
 {
@@ -75,14 +94,4 @@ static void handle_menu_paused(void)
 {
 	navigate_menu_paused();
 	if (joystick_is_pressed() || button_is_pressed()) handle_current_menu_paused_action();
-}
-
-void game_pause(void)
-{
-	HAL_Delay(500);
-	current_menu_state = MENU_PAUSED;
-	while (current_menu_state == MENU_PAUSED)
-	{
-		handle_menu_paused();
-	}
 }

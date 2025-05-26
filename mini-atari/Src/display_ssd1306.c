@@ -8,10 +8,12 @@
 
 #include "display_ssd1306.h"
 
+// ===== Includes ===== //
 #include "display_interface.h"
 
 #if DISPLAY_TYPE == DISPLAY_TYPE_SSD1306
 
+// ===== Public API Function Definitions ===== //
 /*
  * SSD1306 Fonts are accessed with this function
  * see display_font_t and SSD1306_Font_t
@@ -45,3 +47,6 @@ const SSD1306_COLOR display_ssd1306_map_color(display_color_t color)
 }
 
 #endif /* DISPLAY_TYPE == DISPLAY_TYPE_SSD1306 */
+
+// ===== Static Function Definitions ===== //
+// ----- //

@@ -8,15 +8,12 @@
 
 #include "game_snake.h"
 
-// === Includes Start ===
-
+// ===== Includes ===== //
 // include display library
 #include "display_interface.h"
-#include "display_config.h"
 
 // include mini-atari libraries
 #include "game_runtime.h"
-#include "game_init.h"
 #include "menu_logic.h"
 #include "menu_paused.h"
 
@@ -24,17 +21,23 @@
 #include "stm32f0xx_hal.h"	//	For HAL_Delay()
 #include <stdlib.h>			//	For rand()
 
-// === Includes End ===
-
+// ======= Macros/Constants ===== //
 #define GAME_GRID 4		// 4x4 pixel blocks
 
+// ===== Static File-Private Variables ===== //
+// ----- //
 
+// ===== Public Global Variables ===== //
+// ----- //
+
+// ===== Static Function Declarations ===== //
 static void snake_move(game_snake_t *game);
 static void snake_spawn_food(game_snake_t *game);
 static void snake_init(game_snake_t *game);
 static void snake_update(game_snake_t *game);
 static void snake_draw(const game_snake_t *game);
 
+// ===== Public API Function Definitions ===== //
 void snake_game(game_snake_t *game)
 {
 	snake_init(game);
@@ -47,6 +50,30 @@ void snake_game(game_snake_t *game)
 	HAL_Delay(500);
 	current_menu_state = MENU_GAMEOVER;
 }
+
+// ===== Static Function Definitions ===== //
+// Draw Functions
+
+static void snake_draw(const game_snake_t *game)
+{
+	display_clear();
+
+	display_draw_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, display_color_white);
+
+	// draw food
+	display_fill_square(game->food.x, game->food.y, GAME_GRID, display_color_white);
+
+	// draw snake
+	uint8_t i = 0;
+	for (i = 0; i < game->length; i++) // draw whole body
+	{
+		display_fill_square(game->segments[i].x, game->segments[i].y, GAME_GRID, display_color_white);
+	}
+
+	display_update();
+}
+
+// Game Logic
 
 static void snake_init(game_snake_t *game)
 {
@@ -168,21 +195,4 @@ static void snake_spawn_food(game_snake_t *game)
 	}
 }
 
-static void snake_draw(const game_snake_t *game)
-{
-	display_clear();
 
-	display_draw_rectangle(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1, display_color_white);
-
-	// draw food
-	display_fill_square(game->food.x, game->food.y, GAME_GRID, display_color_white);
-
-	// draw snake
-	uint8_t i = 0;
-	for (i = 0; i < game->length; i++) // draw whole body
-	{
-		display_fill_square(game->segments[i].x, game->segments[i].y, GAME_GRID, display_color_white);
-	}
-
-	display_update();
-}

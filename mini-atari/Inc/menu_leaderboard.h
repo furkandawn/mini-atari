@@ -8,6 +8,7 @@
 #ifndef INC_MENU_LEADERBOARD_H_
 #define INC_MENU_LEADERBOARD_H_
 
+// ===== PUBLIC API ===== //
 void handle_menu_leaderboard(void);
 
 #endif /* INC_MENU_LEADERBOARD_H_ */

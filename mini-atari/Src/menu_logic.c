@@ -8,23 +8,21 @@
 
 #include "menu_logic.h"
 
-// === Includes Start ===
+// ===== Includes ===== //
 
 // include display library
 
-
 // include mini-atari libraries
+#include "menu_interface.h"
 #include "joystick.h"
 
 // include other
 #include "stm32f0xx_hal.h"
-#include <stdint.h>
-#include <stdbool.h>
 
-// === Includes End ===
-
+// ===== Public Global Variables ===== //
 menu_state_t current_menu_state = MENU_MAIN;
 
+// ===== Public API Function Definitions ===== //
 /*
  *    Navigate functions without loop
  */

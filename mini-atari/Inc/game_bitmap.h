@@ -8,7 +8,7 @@
 #ifndef INC_GAME_BITMAP_H_
 #define INC_GAME_BITMAP_H_
 
-#include "menu_main.h"
+#include "menu_interface.h"
 #include "display_config.h"
 
 extern const unsigned char game_bitmap[GAME_COUNT][DISPLAY_BUFFER_SIZE];

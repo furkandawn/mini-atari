@@ -8,6 +8,7 @@
 
 #include "game_bitmap.h"
 
+// ===== Public Global Variables ===== //
 /*
  * const defined arrays stored in flash memory, never copy it to ram memory regarding size
  * Also bitmaps in this file are full-screen (DISPLAY_BUFFER_SIZE)

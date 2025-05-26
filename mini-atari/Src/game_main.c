@@ -8,32 +8,25 @@
 
 #include "game_main.h"
 
-// === Includes Start ===
-
-// include display library
-
-
+// ===== Includes ===== //
 // include mini-atari libraries
+#include "menu_interface.h"
+#include "menu_logic.h"
 #include "menu_main.h"
 #include "menu_selected.h"
+#include "menu_playing.h"
+#include "menu_gameover.h"
 #include "menu_save.h"
 #include "menu_leaderboard.h"
 #include "game_leaderboard.h"
-#include "menu_gameover.h"
-#include "menu_logic.h"
-#include "game_init.h"
-
-
-// include mini-atari games
-
 
 // include other
 #include <stdbool.h>
 
-// === Includes End ===
-
+// ===== Static File-Private Variables ===== //
 static bool leaderboard_loaded = false;
 
+// ===== Public API Function Definitions ===== //
 void game_main(void)
 {
 	if (!leaderboard_loaded)

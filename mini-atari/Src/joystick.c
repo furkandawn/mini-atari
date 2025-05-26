@@ -8,17 +8,17 @@
 
 #include "joystick.h"
 
-#define DEBOUNCE_DELAY_MS 50
-#define AXIS_MAX_VALUE 4095
-// === Includes Start ===
 
+// ===== Includes ===== //
 #include "adc.h"
 #include "gpio.h"
-
-// === Includes End ===
-
 extern ADC_HandleTypeDef hadc;
 
+// ======= Macros/Constants ===== //
+#define DEBOUNCE_DELAY_MS 50
+#define AXIS_MAX_VALUE 4095
+
+// ===== Public API Function Definitions ===== //
 joystick_data_t joystick_read(void)
 {
 	joystick_data_t data;

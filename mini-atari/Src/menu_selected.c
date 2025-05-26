@@ -8,15 +8,13 @@
 
 #include "menu_selected.h"
 
-// === Includes Start ===
-
+// ===== Includes ===== //
 // include display library
 #include "display_interface.h"
 
 // include mini-atari libraries
-#include "game_init.h"
 #include "joystick.h"
-#include "menu_main.h"
+#include "menu_interface.h"
 #include "menu_logic.h"
 
 // include other
@@ -24,64 +22,78 @@
 #include <stdint.h>
 #include <ctype.h>
 
-// === Includes End ===
+// ======= Macros/Constants ===== //
+// ----- //
 
-static void to_upper_string(char *str);
-
-static const char *menu_selected_items[ACTION_COUNT] =
+// ===== Static File-Private Variables ===== //
+static const char *menu_selected_items[MENU_ACTION_COUNT] =
 {
 		"Start Game",
 		"Leaderboard",
 		"Main Menu"
 };
 
-menu_selected_action_t current_menu_selected_action = SELECTED_ACTION_START;
+static menu_action_t current_menu_action = MENU_ACTION_START;
 
+// ===== Public Global Variables ===== //
+// ----- //
 
-// Draw functions of selected menu
+// ===== Static Function Declarations ===== //
+static void to_upper_string(char *str);
+static void navigate_menu_selected(void);
+static void handle_current_menu_action(void);
 
-static void menu_selected_draw(uint8_t current_menu_selected_action)
+// ===== Public API Function Definitions ===== //
+void handle_menu_selected(void)
 {
-	display_clear(); // Clears the OLED display
+	navigate_menu_selected();
+	if (joystick_is_pressed() || button_is_pressed()) handle_current_menu_action();
+}
 
-	// Display game name
+// ===== Static Function Definitions ===== //
+// Draw Functions
+
+static void menu_selected_draw(uint8_t current_menu_action)
+{
+	display_clear();
+
+	// Get current game name
 	char buffer[32];
 	snprintf(buffer, sizeof(buffer), ">_ %s _<", menu_main_items[current_game_type]);
 	to_upper_string(buffer);
+
 	display_write_horizontal_string(buffer, 0, display_font_7x10, display_color_white);
+	display_draw_vertical_menu(menu_selected_items, (font_height(display_font_7x10) * 2), &current_menu_action, MENU_ACTION_COUNT, display_font_7x10, display_color_white);
 
-	// Display actions
-	display_draw_vertical_menu(menu_selected_items, 20, &current_menu_selected_action, ACTION_COUNT, display_font_7x10, display_color_white);
-
-    display_update(); // Refreshes the OLED screen
+    display_update();
 }
 
 static void navigate_menu_selected(void)
 {
-	navigate_menu_up_down(&current_menu_selected_action, ACTION_COUNT, menu_selected_draw);
+	navigate_menu_up_down(&current_menu_action, MENU_ACTION_COUNT, menu_selected_draw);
 }
 
 
-// Logic handlers of selected menu
+// Logic Handlers
 
-static void handle_current_menu_selected_action(void)
+static void handle_current_menu_action(void)
 {
-	switch (current_menu_selected_action)
+	switch (current_menu_action)
 	{
-	case SELECTED_ACTION_START:
+	case MENU_ACTION_START:
 	{
 		current_menu_state = MENU_PLAYING;
 		break;
 	}
-	case SELECTED_ACTION_LEADERBOARD:
+	case MENU_ACTION_LEADERBOARD:
 	{
 		current_menu_state = MENU_LEADERBOARD;
 		break;
 	}
-	case SELECTED_ACTION_BACK:
+	case MENU_ACTION_BACK:
 	{
 		current_menu_state = MENU_MAIN;
-		current_menu_selected_action = SELECTED_ACTION_START;
+		current_menu_action = MENU_ACTION_START;
 		current_game_type = GAME_SNAKE;
 		break;
 	}
@@ -92,14 +104,7 @@ static void handle_current_menu_selected_action(void)
 	}
 }
 
-void handle_menu_selected(void)
-{
-	navigate_menu_selected();
-	if (joystick_is_pressed() || button_is_pressed()) handle_current_menu_selected_action();
-}
-
-
-// to make game name(s) uppercase
+// to make game name upper case
 static void to_upper_string(char *str)
 {
 	while (*str)

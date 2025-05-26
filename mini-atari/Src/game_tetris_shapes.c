@@ -8,6 +8,7 @@
 
 #include "game_tetris_shapes.h"
 
+// ===== Public Global Variables ===== //
 tetrimino_type_t current_tetrimino = TETRIMINO_I;
 
 const tetrimino tetriminos[TETRIMINO_TYPE_COUNT] =

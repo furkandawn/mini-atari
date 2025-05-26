@@ -8,8 +8,8 @@
 #ifndef INC_DISPLAY_SSD1306_H_
 #define INC_DISPLAY_SSD1306_H_
 
-#include "display_config.h"
 #include "display_interface.h"
+#include "display_config.h"
 #include <stdint.h>
 
 #if DISPLAY_TYPE == DISPLAY_TYPE_SSD1306

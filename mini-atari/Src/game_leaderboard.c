@@ -8,40 +8,113 @@
 
 #include "game_leaderboard.h"
 
-// === Includes Start ===
-
+// ===== Includes ===== //
 // include Display library
 #include "display_interface.h"
 
 // include mini-atari libraries
-#include "menu_save.h"
-#include "menu_main.h"
-#include "menu_leaderboard.h"
+#include "menu_interface.h"
 
 // include other
+#include "stm32f0xx_hal.h"
+#include "stm32f0xx_hal_flash.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 
-// include stm32 flash libraries
-#include "stm32f0xx_hal.h"
-#include "stm32f0xx_hal_flash.h"
-
-// === Includes End ===
-
+// ======= Macros/Constants ===== //
 #define FLASH_PAGE_63_ADDRESS 0x0800FC00	// STM32F030R8T6 PAGE NUMBER 63 ADRESS, !!! CHECK YOUR OWN MICROCONTROLLER INFO
 #define FLASH_LEADERBOARD_PAGE_SIZE 1024	// flash page size of microcontroller
 #define LEADERBOARD_FLASH_ADRESS FLASH_PAGE_63_ADDRESS
 
-static void save_leaderboard_to_flash(void);
+// ===== Static File-Private Variables ===== //
+// ----- //
 
+// ===== Public Global Variables ===== //
 // main data structure holding leaderboard entries for all games
-leaderboard_entry_t leaderboard[GAME_COUNT][LEADERBOARD_COUNT] = {0};
+leaderboard_entry_t current_leaderboard[GAME_COUNT][LEADERBOARD_COUNT] = {0};
 
 // pointer array for UI rendering only
 const char *menu_leaderboard_entries[GAME_COUNT][LEADERBOARD_TOTAL_COUNT] = {0};
 
-/* MANIPULATE LEADERBOARD STRUCTURE */
+// ===== Static Function Declarations ===== //
+static void save_leaderboard_to_flash(void);
+static void sort_leaderboard(leaderboard_entry_t *entry);
+static void update_menu_leaderboard_entries(game_type_t game);
+
+// ===== Public API Function Definitions ===== //
+bool is_entry_empty(const leaderboard_entry_t *entry)
+{
+	const uint8_t *bytes = (const uint8_t *)entry;
+
+	// no names - 0 scores
+	if (entry->name[0] == '\0' || entry->score == 0 || entry->time_passed == 0) return true;
+
+	// since my structure is 16 bytes, i used uint8_t (255 max)
+	for (uint8_t i = 0; i < sizeof(leaderboard_entry_t); i++)
+	{
+		if (bytes[i] != 0xFF)
+		{
+			return false;	// at least one byte is not 0xFF, then initialized
+		}
+	}
+	return true;
+}
+
+bool is_score_eligible(game_type_t game, uint16_t score)
+{
+	bool result = score > current_leaderboard[game][LEADERBOARD_COUNT - 1].score;
+	return result;
+}
+
+void load_leaderbord_from_flash(void)
+{
+	memcpy(current_leaderboard, (void *)LEADERBOARD_FLASH_ADRESS, sizeof(current_leaderboard));
+
+	for (uint8_t g = 0; g < GAME_COUNT; g++)
+	{
+		// avoids not initialized data
+		for (uint8_t i = 0; i < LEADERBOARD_COUNT; i++)
+		{
+			// checks if the page data is uninitialized
+			if (is_entry_empty(&current_leaderboard[g][i]))
+			{
+				// sets uninitialized page data as 0, to avoid garbage
+				memset(&current_leaderboard[g][i], 0, sizeof(leaderboard_entry_t));
+			}
+		}
+
+		update_menu_leaderboard_entries(g);
+	}
+}
+
+void add_leaderboard_entry(game_type_t game, const char *name, uint16_t score, uint16_t time_passed)
+{
+	if (!is_score_eligible(game, score)) return;
+
+	leaderboard_entry_t new_entry;
+	strncpy(new_entry.name, name, MAX_NAME_LENGTH);
+
+	new_entry.name[MAX_NAME_LENGTH - 1] = '\0';
+	new_entry.score = score;
+	new_entry.time_passed = time_passed;
+
+	leaderboard_entry_t *entries = current_leaderboard[game];
+
+	entries[LEADERBOARD_COUNT - 1] = new_entry;
+
+	sort_leaderboard(entries);
+
+	// manually delete entry memset(&current_leaderboard[GAME_TETRIS][0], 0xFF, sizeof(leaderboard_entry_t));
+
+	update_menu_leaderboard_entries(game);
+
+	save_leaderboard_to_flash();
+}
+
+// ===== Static Function Definitions ===== //
+
+// MANIPULATE LEADERBOARD STRUCTURE
 
 static void sort_leaderboard(leaderboard_entry_t *entry)
 {
@@ -63,31 +136,13 @@ static void update_menu_leaderboard_entries(game_type_t game)
 {
 	for (uint8_t i = 0; i < LEADERBOARD_COUNT; i++)
 	{
-		menu_leaderboard_entries[game][i] = leaderboard[game][i].name;
+		menu_leaderboard_entries[game][i] = current_leaderboard[game][i].name;
 	}
 	menu_leaderboard_entries[game][LEADERBOARD_TOTAL_COUNT - 1] = "--EXIT--";
 }
 
 
 // FLASH MEMORY CONTROL
-
-bool is_entry_empty(const leaderboard_entry_t *entry)
-{
-	const uint8_t *bytes = (const uint8_t *)entry;
-
-	// no names - 0 scores
-	if (entry->name[0] == '\0' || entry->score == 0 || entry->time_passed == 0) return true;
-
-	// since my structure is 16 bytes, i used uint8_t (255 max)
-	for (uint8_t i = 0; i < sizeof(leaderboard_entry_t); i++)
-	{
-		if (bytes[i] != 0xFF)
-		{
-			return false;	// at least one byte is not 0xFF, then initialized
-		}
-	}
-	return true;
-}
 
 static void save_leaderboard_to_flash(void)
 {
@@ -116,7 +171,7 @@ static void save_leaderboard_to_flash(void)
 	{
 		for (uint8_t i = 0; i < LEADERBOARD_COUNT; i++)
 		{
-			const uint8_t *data = (const uint8_t *)&leaderboard[g][i];
+			const uint8_t *data = (const uint8_t *)&current_leaderboard[g][i];
 
 			for (uint8_t j = 0; j < sizeof(leaderboard_entry_t); j += 4)
 			{
@@ -150,57 +205,4 @@ static void save_leaderboard_to_flash(void)
 		}
 	}
 	HAL_FLASH_Lock();
-}
-
-/* PUBLIC API FUNCTIONS */
-
-void add_leaderboard_entry(game_type_t game, const char *name, uint16_t score, uint16_t time_passed)
-{
-	if (!is_score_eligible(game, score)) return;
-
-	leaderboard_entry_t new_entry;
-	strncpy(new_entry.name, name, MAX_NAME_LENGTH);
-
-	new_entry.name[MAX_NAME_LENGTH - 1] = '\0';
-	new_entry.score = score;
-	new_entry.time_passed = time_passed;
-
-	leaderboard_entry_t *entries = leaderboard[game];
-
-	entries[LEADERBOARD_COUNT - 1] = new_entry;
-
-	sort_leaderboard(entries);
-
-	// manually delete entry memset(&leaderboard[GAME_TETRIS][0], 0xFF, sizeof(leaderboard_entry_t));
-
-	update_menu_leaderboard_entries(game);
-
-	save_leaderboard_to_flash();
-}
-
-void load_leaderbord_from_flash(void)
-{
-	memcpy(leaderboard, (void *)LEADERBOARD_FLASH_ADRESS, sizeof(leaderboard));
-
-	for (uint8_t g = 0; g < GAME_COUNT; g++)
-	{
-		// avoids not initialized data
-		for (uint8_t i = 0; i < LEADERBOARD_COUNT; i++)
-		{
-			// checks if the page data is uninitialized
-			if (is_entry_empty(&leaderboard[g][i]))
-			{
-				// sets uninitialized page data as 0, to avoid garbage
-				memset(&leaderboard[g][i], 0, sizeof(leaderboard_entry_t));
-			}
-		}
-
-		update_menu_leaderboard_entries(g);
-	}
-}
-
-
-bool is_score_eligible(game_type_t game, uint16_t score)
-{
-	return score > leaderboard[game][LEADERBOARD_COUNT - 1].score;
 }

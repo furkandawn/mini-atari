@@ -8,20 +8,19 @@
 
 #include "menu_main.h"
 
-// === Includes Start ===
-
+// === Includes === //
 // include display library
 #include "display_interface.h"
 
 // include mini-atari libraries
 #include "joystick.h"
 #include "menu_logic.h"
+#include "menu_interface.h"
 
-// include other
-#include <stdint.h>
+// ===== Static File-Private Variables ===== //
+// ----- //
 
-// === Includes End ===
-
+// ===== Public Global Variables ===== //
 const char *menu_main_items[GAME_COUNT] =
 {
 		"Snake Game",
@@ -33,25 +32,29 @@ const char *menu_main_items[GAME_COUNT] =
 
 game_type_t current_game_type = GAME_SNAKE;
 
+// ===== Static Function Declarations ===== //
+static void navigate_menu_main(void);
+
+// ===== Public API Function Definitions ===== //
+void handle_menu_main(void)
+{
+	navigate_menu_main();
+	if (joystick_is_pressed() || button_is_pressed()) current_menu_state = MENU_SELECTED;
+}
+
+// ===== Static Function Definitions ===== //
+// Draw Functions
 static void draw_menu_main(uint8_t current_game_type)
 {
-	display_clear(); // Clear the OLED display
+	display_clear();
 
-    // Display game list
 	display_write_horizontal_string(">>> GAME MENU <<<", 0, display_font_7x10, display_color_white);
-
 	display_draw_vertical_menu(menu_main_items, 15, &current_game_type, GAME_COUNT, display_font_6x8, display_color_white);
 
-    display_update();  // Refresh OLED screen
+    display_update();
 }
 
 static void navigate_menu_main(void)
 {
 	navigate_menu_up_down(&current_game_type, GAME_COUNT, draw_menu_main);
-}
-
-void handle_menu_main(void)
-{
-	navigate_menu_main();
-	if (joystick_is_pressed() || button_is_pressed()) current_menu_state = MENU_SELECTED;
 }

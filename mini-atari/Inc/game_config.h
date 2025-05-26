@@ -9,7 +9,7 @@
 #define INC_GAME_CONFIG_H_
 
 #include <stdint.h>
-#include "menu_main.h"
+#include "menu_interface.h"
 
 typedef struct
 {

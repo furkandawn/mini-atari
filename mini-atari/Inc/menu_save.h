@@ -8,17 +8,7 @@
 #ifndef INC_MENU_SAVE_H_
 #define INC_MENU_SAVE_H_
 
-#include <stdint.h>
-
-typedef enum
-{
-	SAVE_SAVE = 0,
-	SAVE_BKSP,
-	SAVE_EXIT,
-	SAVE_COUNT
-} menu_save_action_t;
-
-uint8_t get_name_length(void);
+// ==== PUBLIC API ===== //
 void handle_menu_save(void);
 
 #endif /* INC_MENU_SAVE_H_ */
