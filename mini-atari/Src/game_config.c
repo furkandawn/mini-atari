@@ -23,12 +23,12 @@ const game_config_t game_configs[GAME_COUNT] =
 
 		[GAME_TETRIS] =
 		{
-			.initial_delay_ms = 1000,
-			.min_delay_ms = 1000,
-			.delay_decrement = 0,
-			.score_per_action = 1,
-			.score_for_level = 0,
-			.max_level = 0
+			.initial_delay_ms = 300,
+			.min_delay_ms = 100,
+			.delay_decrement = 50,
+			.score_per_action = 10,
+			.score_for_level = 50,
+			.max_level = 5
 		},
 
 		[GAME_3] =

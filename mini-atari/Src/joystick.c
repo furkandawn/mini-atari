@@ -15,8 +15,15 @@
 extern ADC_HandleTypeDef hadc;
 
 // ======= Macros/Constants ===== //
-#define DEBOUNCE_DELAY_MS 50
+#define DEBOUNCE_DELAY_MS 200
 #define AXIS_MAX_VALUE 4095
+
+// ===== Static File-Private Variables ===== //
+static bool joystick_pressed_flag = false;
+static bool button_pressed_flag = false;
+
+// ===== Public Global Variables ===== //
+bool input_enabled = true;
 
 // ===== Public API Function Definitions ===== //
 joystick_data_t joystick_read(void)
@@ -62,48 +69,48 @@ joystick_direction_t joystick_direction(void)
 
 bool joystick_is_pressed(void)
 {
-	static uint32_t joystick_last_press_time = 0;
-	static bool joystick_was_pressed_last_time = false;
-
-	bool is_currently_pressed = (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3) == GPIO_PIN_RESET);
-
-	if (is_currently_pressed && !joystick_was_pressed_last_time)
+	if (joystick_pressed_flag)
 	{
-		uint32_t current_time = HAL_GetTick();
-		if (current_time - joystick_last_press_time > DEBOUNCE_DELAY_MS)
-		{
-			joystick_last_press_time = current_time;
-			joystick_was_pressed_last_time = true;
-			return true;
-		}
-	}
-	else if(!is_currently_pressed)
-	{
-		joystick_was_pressed_last_time = false;
+		joystick_pressed_flag = false;
+		return true;
 	}
 	return false;
 }
 
 bool button_is_pressed(void)
 {
-	static uint32_t button_last_press_time = 0;
-	static bool button_was_pressed_last_time = false;
-
-	bool is_currently_pressed = (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == GPIO_PIN_RESET);
-
-	if (is_currently_pressed && !button_was_pressed_last_time)
+	if (button_pressed_flag)
 	{
-		uint32_t current_time = HAL_GetTick();
-		if (current_time - button_last_press_time > DEBOUNCE_DELAY_MS)
-		{
-			button_last_press_time = current_time;
-			button_was_pressed_last_time = true;
-			return true;
-		}
-	}
-	else if(!is_currently_pressed)
-	{
-		button_was_pressed_last_time = false;
+		button_pressed_flag = false;
+		return true;
 	}
 	return false;
+}
+
+// ===== Static Function Definitions ===== //
+// interrupt for joystick/button press
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (!input_enabled) return;
+
+	static uint32_t last_joystick_press = 0;
+	static uint32_t last_button_press = 0;
+	uint32_t now = HAL_GetTick();
+
+	if (GPIO_Pin == GPIO_PIN_4)
+	{
+		if (now - last_joystick_press > DEBOUNCE_DELAY_MS)
+		{
+			last_joystick_press = now;
+			joystick_pressed_flag = true;
+		}
+	}
+	else if (GPIO_Pin == GPIO_PIN_5)
+	{
+		if (now - last_button_press > DEBOUNCE_DELAY_MS)
+		{
+			last_button_press = now;
+			button_pressed_flag = true;
+		}
+	}
 }

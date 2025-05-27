@@ -42,6 +42,7 @@ void game_reset_configs(game_type_t type)
 	game_runtime.level = 1;
 	game_runtime.delay_ms = game_configs[type].initial_delay_ms;
 	game_over = false;
+	animation_shown = false;
 
 	// in-game time spent
 	start_time_ms = HAL_GetTick(); // Starts measuring time
@@ -62,9 +63,8 @@ void game_update_progress(void)
 	if (game_runtime.score >= game_runtime.level * cfg->score_for_level && game_runtime.level < cfg->max_level)
 	{
 		game_runtime.level++;
-		game_draw_level_screen();
 
-		if (game_runtime.delay_ms > cfg->min_delay_ms)
+		if (game_runtime.delay_ms - cfg->delay_decrement > cfg->min_delay_ms)
 		{
 			game_runtime.delay_ms -= cfg->delay_decrement;
 		}
@@ -83,7 +83,7 @@ uint8_t game_get_level(void)
 	return game_runtime.level;
 }
 
-uint8_t game_get_delay_ms(void)
+uint16_t game_get_delay_ms(void)
 {
 	return game_runtime.delay_ms;
 }

@@ -28,7 +28,7 @@ void game_reset_configs(game_type_t type);
 void game_update_progress(void);
 uint16_t game_get_score(void);
 uint8_t game_get_level(void);
-uint8_t game_get_delay_ms(void);
+uint16_t game_get_delay_ms(void);
 uint16_t game_get_time_spent(void);
 uint16_t game_get_continous_time(void);
 

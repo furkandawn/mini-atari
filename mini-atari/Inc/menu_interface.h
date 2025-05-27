@@ -104,7 +104,7 @@ extern const char *menu_main_items[GAME_COUNT];
 //----//
 
 // ----- menu_paused ----- //
-// ----- //
+void game_pause(void);
 
 // ----- menu_gameover ----- //
 extern bool animation_shown;
@@ -114,5 +114,8 @@ extern bool animation_shown;
 
 // ----- menu_leaderboard ----- //
 // ----- //
+
+// ----- joystick/button interrupt logic ----- //
+extern bool input_enabled;
 
 #endif /* INC_MENU_INTERFACE_H_ */

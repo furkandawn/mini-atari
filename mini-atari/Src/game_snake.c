@@ -47,7 +47,6 @@ void snake_game(game_snake_t *game)
 		snake_update(game);
 	}
 
-	HAL_Delay(500);
 	current_menu_state = MENU_GAMEOVER;
 }
 
@@ -87,48 +86,6 @@ static void snake_init(game_snake_t *game)
 	}
 
 	snake_spawn_food(game);
-}
-
-static void snake_update(game_snake_t *game)
-{
-	snake_draw(game);
-	if (joystick_is_pressed() || button_is_pressed()) game_pause();
-	if (game_over || current_menu_state != MENU_PLAYING) return;
-
-	snake_move(game);
-
-	// checks if snake eats the bait
-	point_t head = game->segments[0];
-	if (head.x == game->food.x && head.y == game->food.y)
-	{
-		game_update_progress();
-		if (game->length < SNAKE_MAX_LENGTH)
-		{
-			game->segments[game->length] = game->segments[game->length - 1]; // creates another piece on the tail
-			game->length++;
-		}
-		snake_spawn_food(game);
-	}
-
-	// snake wall-collapsion
-	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT)
-	{
-		game_over = true;
-		return;
-	}
-
-	// snake self-collapsion
-	for (int i = 1; i < game->length; i++)
-	{
-		if (head.x == game->segments[i].x && head.y == game->segments[i].y)
-		{
-			game_over = true;
-			break;
-		}
-	}
-
-	HAL_Delay(game_get_delay_ms());
-	// to do : don't use hal_delay
 }
 
 static void snake_move(game_snake_t *game)
@@ -195,4 +152,43 @@ static void snake_spawn_food(game_snake_t *game)
 	}
 }
 
+static void snake_update(game_snake_t *game)
+{
+	if (joystick_is_pressed() || button_is_pressed()) game_pause();
+	if (game_over || current_menu_state != MENU_PLAYING) return;
 
+	snake_draw(game);
+	snake_move(game);
+
+	// checks if snake eats the bait
+	point_t head = game->segments[0];
+	if (head.x == game->food.x && head.y == game->food.y)
+	{
+		game_update_progress();
+		if (game->length < SNAKE_MAX_LENGTH)
+		{
+			game->segments[game->length] = game->segments[game->length - 1]; // creates another piece on the tail
+			game->length++;
+		}
+		snake_spawn_food(game);
+	}
+
+	// snake wall-collapsion
+	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT)
+	{
+		game_over = true;
+		return;
+	}
+
+	// snake self-collapsion
+	for (int i = 1; i < game->length; i++)
+	{
+		if (head.x == game->segments[i].x && head.y == game->segments[i].y)
+		{
+			game_over = true;
+			break;
+		}
+	}
+
+	HAL_Delay(game_get_delay_ms());
+}

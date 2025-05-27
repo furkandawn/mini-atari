@@ -67,7 +67,6 @@ void game_tetris(game_tetris_t *game)
 		tetris_update(game);
 	}
 
-	HAL_Delay(500);
 	current_menu_state = MENU_GAMEOVER;
 }
 
@@ -93,11 +92,11 @@ static void tetris_draw_board(void)
 
 static void tetris_draw_stats(void)
 {
-	uint8_t x = ((TETRIS_BOARD_WIDTH * GAME_GRID) + (GAME_GRID * 2));
+	uint8_t x = ((TETRIS_BOARD_WIDTH * GAME_GRID) + (GAME_OFFSET * 2) + (10));
 	uint8_t y = GAME_GRID;
 	char buffer[16];
 
-	snprintf(buffer, sizeof(buffer), "SCORE %d", game_get_score());
+	snprintf(buffer, sizeof(buffer), "LEVEL %d", game_get_level());
 	display_set_cursor(x, y);
 	display_write_string(buffer, display_font_7x10, display_color_white);
 
@@ -160,8 +159,7 @@ static void tetris_draw(game_tetris_t *game)
 static void tetris_init(game_tetris_t *game)
 {
 	memset(board, 0, sizeof(board));
-	last_update = HAL_GetTick();
-	last_input = HAL_GetTick();
+	last_update = last_input = HAL_GetTick();
 	next_tetrimino_index = rand() % TETRIMINO_TYPE_COUNT;
 	tetrimino_spawn(game);
 }
@@ -170,8 +168,8 @@ static void tetrimino_spawn(game_tetris_t *game)
 {
 	game->type = next_tetrimino_index;
 	game->rotation = 0;
-	game->x = ((TETRIS_BOARD_WIDTH / 2) * GAME_GRID);
-	game->y = GAME_GRID;
+	game->x = ((TETRIS_BOARD_WIDTH / 2) * GAME_GRID - GAME_OFFSET);
+	game->y = GAME_OFFSET;
 
 	next_tetrimino_index = rand() % TETRIMINO_TYPE_COUNT;
 
@@ -219,16 +217,13 @@ static void tetrimino_move(game_tetris_t *game)
 
 static void tetrimino_rotate(game_tetris_t *game)
 {
-	if (button_is_pressed())
-	{
-		uint8_t original_rotation = game->rotation;
-		game->rotation = ((game->rotation + 1) % tetriminos[game->type].rotation_count);
+	uint8_t original_rotation = game->rotation;
+	game->rotation = ((game->rotation + 1) % tetriminos[game->type].rotation_count);
 
-		// revert if new rotation hits the walls
-		if (!tetrimino_can_move(game, 0, 0))
-		{
-			game->rotation = original_rotation;
-		}
+	// revert if new rotation hits the walls
+	if (!tetrimino_can_move(game, 0, 0))
+	{
+		game->rotation = original_rotation;
 	}
 }
 
@@ -288,34 +283,25 @@ static void tetris_clear_line(void)
 
 static void tetris_update(game_tetris_t *game)
 {
-	uint32_t now = HAL_GetTick();
-
 	if (joystick_is_pressed()) game_pause();
 	if (game_over || current_menu_state != MENU_PLAYING) return;
 
-	if (now - last_input >= INPUT_DELAY_MS)
+	if (button_is_pressed()) tetrimino_rotate(game);
+
+	tetrimino_move(game);
+
+	// gravity
+	if (tetrimino_can_move(game, 0, 1))
 	{
-		tetrimino_rotate(game);
-		tetrimino_move(game);
-		last_input = now;
+		game->y += GAME_GRID;
 	}
-
-
-	if (now - last_update >= game_get_delay_ms())
+	else
 	{
-		// gravity
-		if (tetrimino_can_move(game, 0, 1))
-		{
-			game->y += GAME_GRID;
-		}
-		else
-		{
-			tetrimino_land(game);
-			tetris_clear_line();
-			tetrimino_spawn(game);
-		}
-		last_update = now;
+		tetrimino_land(game);
+		tetris_clear_line();
+		tetrimino_spawn(game);
 	}
 
 	tetris_draw(game);
+	HAL_Delay(game_get_delay_ms());
 }

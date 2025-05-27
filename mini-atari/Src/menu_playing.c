@@ -32,7 +32,11 @@ static void game_init(void);
 void handle_menu_playing(void)
 {
 	game_reset_configs(current_game_type);
+
+	input_enabled = false;
 	game_draw_start_screen();
+	input_enabled = true;
+
 	game_init();
 }
 

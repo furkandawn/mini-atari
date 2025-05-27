@@ -42,7 +42,9 @@ static void handle_menu_paused(void);
 // ===== Public API Function Definitions ===== //
 void game_pause(void)
 {
+	input_enabled = false;
 	HAL_Delay(500);
+	input_enabled = true;
 	current_menu_state = MENU_PAUSED;
 	while (current_menu_state == MENU_PAUSED)
 	{

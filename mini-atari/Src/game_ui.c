@@ -47,8 +47,6 @@ void game_draw_start_screen(void)
 		display_update();
 		HAL_Delay(500);
 	}
-
-	animation_shown = false;  // resets gameover animated screen flag
 }
 
 void game_draw_level_screen(void)

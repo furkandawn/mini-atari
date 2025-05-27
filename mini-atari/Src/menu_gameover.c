@@ -48,11 +48,14 @@ static void handle_current_gameover_action(void);
 // ===== Public API Function Definitions ===== //
 void handle_menu_gameover(void)
 {
+	HAL_Delay(500);
 	if (!animation_shown)
 	{
+		input_enabled = false;
 		game_get_time_spent();
 		draw_animated_menu_gameover();
 		animation_shown = true;
+		input_enabled = true;
 	}
 
 	navigate_menu_gameover();
