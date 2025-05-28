@@ -23,17 +23,18 @@
 // ===== Static File-Private Variables ===== //
 // in-game time spent related variables
 static uint32_t start_time_ms = 0;
-static bool time_reset = false;
 static uint16_t frozen_time = 0;
 static uint16_t continous_time = 0;
+static bool freeze_timer = false;
 
 // ===== Public Global Variables ===== //
+uint32_t paused_time;
 game_runtime_t game_runtime = {0};
 bool game_over = false;
 
 // ===== Public API Function Definitions ===== //
 
-// Initializes Game Configs
+// Initializes game configurations
 void game_reset_configs(game_type_t type)
 {
 	// game configurations
@@ -42,13 +43,18 @@ void game_reset_configs(game_type_t type)
 	game_runtime.level = 1;
 	game_runtime.delay_ms = game_configs[type].initial_delay_ms;
 	game_over = false;
-	animation_shown = false;
+	gameover_animation_shown = false;
+}
 
+// Initializes all time related variables
+void game_reset_timers(void)
+{
 	// in-game time spent
-	start_time_ms = HAL_GetTick(); // Starts measuring time
-	time_reset = false;
+	start_time_ms = HAL_GetTick(); // get the start time of game boot-up
+	freeze_timer = false;
 	frozen_time = 0;
 	continous_time = 0;
+	paused_time = 0;
 
 	// RNG for game randomness
 	srand(HAL_GetTick());
@@ -90,10 +96,11 @@ uint16_t game_get_delay_ms(void)
 
 uint16_t game_get_time_spent(void)
 {
-	if (!time_reset)
+	if (!freeze_timer)
 	{
-		frozen_time = (HAL_GetTick() - start_time_ms) / 1000; // converts ms to seconds
-		time_reset = true;
+		frozen_time = (HAL_GetTick() - start_time_ms - paused_time) / 1000; // converts ms to seconds
+		freeze_timer = true;
+		return frozen_time;
 	}
 
 	return frozen_time;
@@ -101,7 +108,6 @@ uint16_t game_get_time_spent(void)
 
 uint16_t game_get_continous_time(void)
 {
-	continous_time = (HAL_GetTick() - start_time_ms) / 1000; // converts ms to seconds
-
+	continous_time = (HAL_GetTick() - start_time_ms - paused_time) / 1000; // converts ms to seconds
 	return continous_time;
 }

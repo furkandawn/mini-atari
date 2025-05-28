@@ -107,7 +107,7 @@ extern const char *menu_main_items[GAME_COUNT];
 void game_pause(void);
 
 // ----- menu_gameover ----- //
-extern bool animation_shown;
+extern bool gameover_animation_shown;
 
 // ----- menu_save ----- //
 // ----- //

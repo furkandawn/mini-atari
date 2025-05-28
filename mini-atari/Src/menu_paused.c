@@ -16,6 +16,7 @@
 #include "menu_interface.h"
 #include "menu_logic.h"
 #include "joystick.h"
+#include "game_runtime.h"
 
 // include other
 #include <stdint.h>
@@ -42,14 +43,20 @@ static void handle_menu_paused(void);
 // ===== Public API Function Definitions ===== //
 void game_pause(void)
 {
+	uint32_t start_paused_time = HAL_GetTick();			// start measuring how much time spent in paused state
+
 	input_enabled = false;
 	HAL_Delay(500);
 	input_enabled = true;
+
 	current_menu_state = MENU_PAUSED;
+
 	while (current_menu_state == MENU_PAUSED)
 	{
 		handle_menu_paused();
 	}
+
+	paused_time += HAL_GetTick() - start_paused_time;	// get the result
 }
 
 // ===== Static Function Definitions ===== //

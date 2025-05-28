@@ -38,7 +38,7 @@ static const char *menu_gameover_items[GAMEOVER_COUNT] =
 static gameover_action_t current_gameover_action = GAMEOVER_PLAY_AGAIN;
 
 // ===== Public Global Variables ===== //
-bool animation_shown = false; // to draw game over screen animated, resets every start up of a game in "game_start.c"
+bool gameover_animation_shown = false; // to draw game over screen animated, resets every start up of a game in "game_runtime.c"
 
 // ===== Static Function Declarations ===== //
 static void draw_animated_menu_gameover(void);
@@ -48,13 +48,13 @@ static void handle_current_gameover_action(void);
 // ===== Public API Function Definitions ===== //
 void handle_menu_gameover(void)
 {
-	HAL_Delay(500);
-	if (!animation_shown)
+	if (!gameover_animation_shown)
 	{
-		input_enabled = false;
 		game_get_time_spent();
+		HAL_Delay(500);
+		input_enabled = false;
 		draw_animated_menu_gameover();
-		animation_shown = true;
+		gameover_animation_shown = true;
 		input_enabled = true;
 	}
 

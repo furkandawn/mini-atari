@@ -37,6 +37,7 @@ void handle_menu_playing(void)
 	game_draw_start_screen();
 	input_enabled = true;
 
+	game_reset_timers();
 	game_init();
 }
 

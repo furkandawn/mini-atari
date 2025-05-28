@@ -28,13 +28,16 @@
 
 // ======= Macros/Constants ===== //
 #define GAME_GRID 3					// 3x3 pixel blocks
-#define GAME_OFFSET GAME_GRID
+#define GAME_OFFSET GAME_GRID		// game frame size
 #define GAME_START_POSITION_X 0
 #define INPUT_DELAY_MS 50
 
 // ===== Static File-Private Variables ===== //
 static uint8_t board[TETRIS_BOARD_HEIGHT][TETRIS_BOARD_WIDTH] = {0};
 static uint8_t next_tetrimino_index;
+static uint8_t tetrimino_landed_y;
+static bool direction_down_flag = false;
+static const uint8_t speedup_delay = 60;
 
 // game input delay
 static uint32_t last_update;
@@ -94,7 +97,7 @@ static void tetris_draw_stats(void)
 {
 	uint8_t x = ((TETRIS_BOARD_WIDTH * GAME_GRID) + (GAME_OFFSET * 2) + (10));
 	uint8_t y = GAME_GRID;
-	char buffer[16];
+	char buffer[32];
 
 	snprintf(buffer, sizeof(buffer), "LEVEL %d", game_get_level());
 	display_set_cursor(x, y);
@@ -208,9 +211,18 @@ static void tetrimino_move(game_tetris_t *game)
 
 	switch(dir)
 	{
-	case DIRECTION_DOWN: if (tetrimino_can_move(game, 0, 1)) game->y += GAME_GRID; break;
-	case DIRECTION_LEFT: if (tetrimino_can_move(game, -1, 0)) game->x -= GAME_GRID; break;
-	case DIRECTION_RIGHT: if (tetrimino_can_move(game, 1, 0)) game->x += GAME_GRID; break;
+	case DIRECTION_DOWN:
+		direction_down_flag = true;
+		break;
+
+	case DIRECTION_LEFT:
+		if (tetrimino_can_move(game, -1, 0)) game->x -= GAME_GRID;
+		break;
+
+	case DIRECTION_RIGHT:
+		if (tetrimino_can_move(game, 1, 0)) game->x += GAME_GRID;
+		break;
+
 	default: break;
 	}
 }
@@ -238,15 +250,19 @@ static void tetrimino_land(game_tetris_t *game)
 			uint8_t x = ((game->x / GAME_GRID) + j);
 			uint8_t y = ((game->y / GAME_GRID) + i);
 
-			if (x < TETRIS_BOARD_WIDTH && y < TETRIS_BOARD_HEIGHT) board[y][x] = 1;
+			if (x < TETRIS_BOARD_WIDTH && y < TETRIS_BOARD_HEIGHT)
+				{
+					board[y][x] = 1;
+					tetrimino_landed_y = y;		// this contains the bottom block position of current tetrimino
+				}
 		}
 	}
 }
 
 static void tetris_clear_line(void)
 {
-	for (int8_t y = TETRIS_BOARD_HEIGHT - 1; y >= 0 ; y--)
-	{
+	for (int8_t y = tetrimino_landed_y; y > tetrimino_landed_y - 4; y--)	// since the longest tetrimino is "I" and it
+	{																		// can be 4 blocks long only check 4 lines
 		bool line_is_full = true;
 
 		for (uint8_t x = 0; x < TETRIS_BOARD_WIDTH; x++)
@@ -269,14 +285,14 @@ static void tetris_clear_line(void)
 				}
 			}
 
-			// clear the top row
+			// clear the top row since there is no other row above to be replaced with
 			for (uint8_t col = 0; col < TETRIS_BOARD_WIDTH; col++)
 			{
 				board[0][col] = 0;
 			}
 
 			game_update_progress();
-			y++;
+			y++;	// re-check this same row again next loop, it now holds the row above, which might also be full.
 		}
 	}
 }
@@ -303,5 +319,14 @@ static void tetris_update(game_tetris_t *game)
 	}
 
 	tetris_draw(game);
-	HAL_Delay(game_get_delay_ms());
+
+	if (direction_down_flag)
+	{
+		HAL_Delay(speedup_delay);
+		direction_down_flag = false;
+	}
+	else
+	{
+		HAL_Delay(game_get_delay_ms());
+	}
 }

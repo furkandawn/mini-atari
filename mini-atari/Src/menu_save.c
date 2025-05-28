@@ -210,8 +210,10 @@ static void handle_not_eligible(void)
 	{
 		if (!drawn_once)
 		{
+			input_enabled = false;
 			draw_not_eligible();
 			drawn_once = true;
+			input_enabled = true;
 		}
 	}
 }
