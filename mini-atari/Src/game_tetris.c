@@ -14,9 +14,8 @@
 
 // include mini-atari libraries
 #include "game_tetris_shapes.h"
-#include "menu_interface.h"
-#include "menu_logic.h"
 #include "game_runtime.h"
+#include "menu_paused.h"
 #include "joystick.h"
 
 // include other
@@ -223,7 +222,8 @@ static void tetrimino_move(game_tetris_t *game)
 		if (tetrimino_can_move(game, 1, 0)) game->x += GAME_GRID;
 		break;
 
-	default: break;
+	default:
+		break;
 	}
 }
 

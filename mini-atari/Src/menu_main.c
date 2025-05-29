@@ -25,7 +25,7 @@ const char *menu_main_items[GAME_COUNT] =
 {
 		"Snake Game",
 		"Tetris Game",
-		"Game3",
+		"Pong Game",
 		"Game4",
 		"Game5"
 };

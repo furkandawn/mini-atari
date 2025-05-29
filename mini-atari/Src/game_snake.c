@@ -14,8 +14,8 @@
 
 // include mini-atari libraries
 #include "game_runtime.h"
-#include "menu_logic.h"
 #include "menu_paused.h"
+#include "joystick.h"
 
 // include other
 #include "stm32f0xx_hal.h"	//	For HAL_Delay()

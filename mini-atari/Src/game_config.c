@@ -33,14 +33,14 @@ const game_config_t game_configs[GAME_COUNT] =
 			.level_up_animation = false
 		},
 
-		[GAME_3] =
+		[GAME_PONG] =
 		{
-			.initial_delay_ms = 0,
+			.initial_delay_ms = 20,
 			.min_delay_ms = 0,
 			.delay_decrement = 0,
 			.score_per_action = 0,
 			.score_for_level = 0,
-			.max_level = 0,
+			.max_level = 1,
 			.level_up_animation = false
 		},
 

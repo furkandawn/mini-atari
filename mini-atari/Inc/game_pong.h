@@ -12,13 +12,15 @@
 
 typedef struct
 {
-	int8_t x, y;
+	uint8_t x, y;
+	uint8_t old_x, old_y, old_old_x, old_old_y;
 	int8_t dx, dy;
 } pong_ball_t;
 
 typedef struct
 {
-	int8_t y;
+	uint8_t y;
+	uint8_t old_y;
 	uint8_t score;
 } pong_paddle_t;
 

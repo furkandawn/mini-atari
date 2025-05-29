@@ -46,7 +46,7 @@ typedef enum
 {
 	GAME_SNAKE = 0,
 	GAME_TETRIS,
-	GAME_3,
+	GAME_PONG,
 	GAME_4,
 	GAME_5,
 	GAME_COUNT
@@ -60,14 +60,6 @@ typedef enum
 	MENU_ACTION_BACK,
 	MENU_ACTION_COUNT
 } menu_action_t;
-
-// ----- menu_paused ----- //
-typedef enum
-{
-	PAUSED_CONTINUE = 0,
-	PAUSED_EXIT,
-	PAUSED_COUNT
-} paused_action_t;
 
 // ----- menu_gameover ----- //
 typedef enum
@@ -102,9 +94,6 @@ extern const char *menu_main_items[GAME_COUNT];
 
 // ----- menu_selected ----- //
 //----//
-
-// ----- menu_paused ----- //
-void game_pause(void);
 
 // ----- menu_gameover ----- //
 extern bool gameover_animation_shown;

@@ -26,6 +26,14 @@
 // ----- //
 
 // ===== Static File-Private Variables ===== //
+// ----- menu_paused ----- //
+typedef enum
+{
+	PAUSED_CONTINUE = 0,
+	PAUSED_EXIT,
+	PAUSED_COUNT
+} paused_action_t;
+
 static const char *menu_paused_items[PAUSED_COUNT] =
 {
 		"Continue",
