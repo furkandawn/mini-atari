@@ -70,6 +70,11 @@ void game_update_progress(void)
 	{
 		game_runtime.level++;
 
+		if (cfg->level_up_animation)
+		{
+			game_draw_level_up_animation();
+		}
+
 		if (game_runtime.delay_ms - cfg->delay_decrement > cfg->min_delay_ms)
 		{
 			game_runtime.delay_ms -= cfg->delay_decrement;

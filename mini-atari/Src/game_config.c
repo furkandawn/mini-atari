@@ -18,7 +18,8 @@ const game_config_t game_configs[GAME_COUNT] =
 			.delay_decrement = 10,
 			.score_per_action = 1,
 			.score_for_level = 10,
-			.max_level = 5
+			.max_level = 5,
+			.level_up_animation = true
 		},
 
 		[GAME_TETRIS] =
@@ -28,7 +29,8 @@ const game_config_t game_configs[GAME_COUNT] =
 			.delay_decrement = 50,
 			.score_per_action = 10,
 			.score_for_level = 50,
-			.max_level = 5
+			.max_level = 5,
+			.level_up_animation = false
 		},
 
 		[GAME_3] =
@@ -38,7 +40,8 @@ const game_config_t game_configs[GAME_COUNT] =
 			.delay_decrement = 0,
 			.score_per_action = 0,
 			.score_for_level = 0,
-			.max_level = 0
+			.max_level = 0,
+			.level_up_animation = false
 		},
 
 		[GAME_4] =
@@ -48,7 +51,8 @@ const game_config_t game_configs[GAME_COUNT] =
 			.delay_decrement = 0,
 			.score_per_action = 0,
 			.score_for_level = 0,
-			.max_level = 0
+			.max_level = 0,
+			.level_up_animation = false
 		},
 
 		[GAME_5] =
@@ -58,6 +62,7 @@ const game_config_t game_configs[GAME_COUNT] =
 			.delay_decrement = 0,
 			.score_per_action = 0,
 			.score_for_level = 0,
-			.max_level = 0
+			.max_level = 0,
+			.level_up_animation = false
 		}
 };

@@ -51,8 +51,9 @@ void handle_menu_gameover(void)
 	if (!gameover_animation_shown)
 	{
 		game_get_time_spent();
-		HAL_Delay(500);
+
 		input_enabled = false;
+		HAL_Delay(500);
 		draw_animated_menu_gameover();
 		gameover_animation_shown = true;
 		input_enabled = true;

@@ -49,7 +49,7 @@ void game_draw_start_screen(void)
 	}
 }
 
-void game_draw_level_screen(void)
+void game_draw_level_up_animation(void)
 {
 	char buffer[16];
 	snprintf(buffer, sizeof(buffer), "LEVEL %d", game_runtime.level);

@@ -9,6 +9,7 @@
 #define INC_GAME_CONFIG_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "menu_interface.h"
 
 typedef struct
@@ -19,6 +20,7 @@ typedef struct
 	uint8_t score_per_action;
 	uint8_t score_for_level;
 	uint8_t max_level;
+	bool level_up_animation;
 } game_config_t;
 
 extern const game_config_t game_configs[GAME_COUNT];
