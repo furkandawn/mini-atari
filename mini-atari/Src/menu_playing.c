@@ -16,6 +16,7 @@
 #include "game_snake.h"
 #include "game_tetris.h"
 #include "game_pong.h"
+#include "game_breakout.h"
 
 // ======= Macros/Constants ===== //
 // ----- //
@@ -66,11 +67,13 @@ static void game_init(void)
 		game_pong(&game);
 		break;
 	}
-	/* to do: complete other games
-	case GAME_4:
+	case GAME_BREAKOUT:
 	{
+		game_breakout_t game;
+		game_breakout(&game);
 		break;
 	}
+	/* to do: complete other games
 	case GAME_5:
 	{
 		break;

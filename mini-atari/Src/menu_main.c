@@ -23,10 +23,10 @@
 // ===== Public Global Variables ===== //
 const char *menu_main_items[GAME_COUNT] =
 {
-		"Snake Game",
-		"Tetris Game",
-		"Pong Game",
-		"Game4",
+		"Snake",
+		"Tetris",
+		"Pong",
+		"Breakout",
 		"Game5"
 };
 

@@ -31,7 +31,6 @@ typedef struct
 	uint16_t y;
 } joystick_data_t;
 
-joystick_data_t joystick_read(void);
 joystick_direction_t joystick_direction(void);
 bool joystick_is_pressed(void);
 bool button_is_pressed(void);

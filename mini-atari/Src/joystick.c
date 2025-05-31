@@ -25,35 +25,10 @@ static bool button_pressed_flag = false;
 // ===== Public Global Variables ===== //
 bool input_enabled = true;
 
+// ===== Static Function Declarations ===== //
+static joystick_data_t joystick_read(void);
+
 // ===== Public API Function Definitions ===== //
-joystick_data_t joystick_read(void)
-{
-	joystick_data_t data;
-
-    // Read X axis
-    HAL_ADC_Start(&hadc);
-    if (HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY) == HAL_OK)
-    {
-    	data.x = HAL_ADC_GetValue(&hadc);
-    }
-    else
-    {
-    	data.x = AXIS_MAX_VALUE / 2; // if timeout, fallback mid-value.
-    }
-
-    // Read Y axis
-    HAL_ADC_Start(&hadc);
-    if (HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY) == HAL_OK)
-    {
-    	data.y = HAL_ADC_GetValue(&hadc);
-    }
-    else
-    {
-    	data.y = AXIS_MAX_VALUE / 2; // if timeout, fallback mid-value.
-    }
-
-	return data;
-}
 
 joystick_direction_t joystick_direction(void)
 {
@@ -88,6 +63,35 @@ bool button_is_pressed(void)
 }
 
 // ===== Static Function Definitions ===== //
+static joystick_data_t joystick_read(void)
+{
+	joystick_data_t data;
+
+    // Read X axis
+    HAL_ADC_Start(&hadc);
+    if (HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY) == HAL_OK)
+    {
+    	data.x = HAL_ADC_GetValue(&hadc);
+    }
+    else
+    {
+    	data.x = AXIS_MAX_VALUE / 2; // if timeout, fallback mid-value.
+    }
+
+    // Read Y axis
+    HAL_ADC_Start(&hadc);
+    if (HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY) == HAL_OK)
+    {
+    	data.y = HAL_ADC_GetValue(&hadc);
+    }
+    else
+    {
+    	data.y = AXIS_MAX_VALUE / 2; // if timeout, fallback mid-value.
+    }
+
+	return data;
+}
+
 // interrupt for joystick/button press
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {

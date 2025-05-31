@@ -173,14 +173,19 @@ static void snake_update(game_snake_t *game)
 		snake_spawn_food(game);
 	}
 
-	// snake wall-collapsion
+	// snake wall-collision
 	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT)
 	{
 		game_over = true;
 		return;
 	}
 
-	// snake self-collapsion
+	if (head.x <= 0 || head.y <= 0)
+	{
+		game_over = true;
+		return;
+	}
+	// checks if the head collides with any of the segments
 	for (int i = 1; i < game->length; i++)
 	{
 		if (head.x == game->segments[i].x && head.y == game->segments[i].y)

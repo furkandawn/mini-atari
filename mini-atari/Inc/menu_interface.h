@@ -47,7 +47,7 @@ typedef enum
 	GAME_SNAKE = 0,
 	GAME_TETRIS,
 	GAME_PONG,
-	GAME_4,
+	GAME_BREAKOUT,
 	GAME_5,
 	GAME_COUNT
 } game_type_t;
