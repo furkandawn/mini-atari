@@ -1,13 +1,12 @@
 # mini-atari
 
-A mini retro-style game console built with the STM32F030R8 microcontroller, SSD1306 0.96' OLED display, 2 dimension analog joystick.
-Includes: A menu system, 5 games, game state management, and a modular embedded codebase written in pure C.
+A mini retro-style game console built with the STM32F030R8 microcontroller, SSD1306 0.96' OLED display, 2 dimensional analog joystick, an external button.
 
-STM32 cubeIDE 1.17.0 used for this project.
-
+STM32 cubeIDE 1.18.0 used for this project.
 
 
-📌 About the Project ->
+
+📌 About this Project ->
 
 I started this project as a personal challenge to:
 
@@ -17,13 +16,13 @@ I started this project as a personal challenge to:
 
 
 
-This project is a game console built on the STM32F030R8T6 microcontroller. It includes:
+ It includes:
 
-    ➤A menu system with joystick navigation
-    ➤A working Snake game (only 1 game for now)
+    ➤Menu systems with joystick navigation
+    ➤Snake, Tetris, Pong game. (Currently working on other two.)
     ➤Modular code design with future games planned
     ➤Score and level system
-    ➤Various types of menus
+    ➤Leaderboard System stored in flash
 
 
 What I Learned/am learning ->
@@ -42,15 +41,8 @@ What I Learned/am learning ->
        •SRAM vs Flash, data segment layout, flash writing constraints
 
 
-Plans for future:
-    
-      ➤Create a leaderboard system which user will be able to save his score and name directly to the flash memory when he hits a high score in the current game.
-      ➤Add special icons for each game at startup.
-      ➤Add more games (tetris as 2nd).
 
-
-
-🎥Gifs and Videos of the current state
+🎥Gifs and Videos - (Out of date, going to update soon)
 
 https://www.youtube.com/watch?v=mqlZMSorcHI
 
