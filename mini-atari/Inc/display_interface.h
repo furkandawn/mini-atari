@@ -28,9 +28,9 @@ typedef enum
 	display_font_6x8,
 	display_font_7x10,
 	display_font_11x18,
-	display_font_16x15,
+	//display_font_16x15,	disabled to free up space
 	display_font_16x24,
-	display_font_16x26
+	//display_font_16x26	disabled to free up space
 	// add here
 } display_font_t;
 

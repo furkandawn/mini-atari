@@ -175,7 +175,7 @@ static void tetrimino_spawn(game_tetris_t *game)
 
 	next_tetrimino_index = rand() % TETRIMINO_TYPE_COUNT;
 
-	if (!tetrimino_can_move(game, 0, 0)) game_over = true;
+	if (!tetrimino_can_move(game, 0, 1)) game_lose_life();
 }
 
 /*

@@ -48,7 +48,7 @@ typedef enum
 	GAME_TETRIS,
 	GAME_PONG,
 	GAME_BREAKOUT,
-	GAME_5,
+	GAME_SPCINV,
 	GAME_COUNT
 } game_type_t;
 

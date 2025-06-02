@@ -27,7 +27,7 @@ const char *menu_main_items[GAME_COUNT] =
 		"Tetris",
 		"Pong",
 		"Breakout",
-		"Game5"
+		"Spc Inv"
 };
 
 game_type_t current_game_type = GAME_SNAKE;
@@ -56,5 +56,5 @@ static void draw_menu_main(uint8_t current_game_type)
 
 static void navigate_menu_main(void)
 {
-	navigate_menu_up_down(&current_game_type, GAME_COUNT, draw_menu_main);
+	navigate_menu_up_down_loop(&current_game_type, GAME_COUNT, draw_menu_main);
 }

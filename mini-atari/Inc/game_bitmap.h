@@ -11,6 +11,6 @@
 #include "menu_interface.h"
 #include "display_config.h"
 
-extern const unsigned char game_bitmap[GAME_COUNT][DISPLAY_BUFFER_SIZE];
+extern const unsigned char game_startup_bitmap[GAME_COUNT][DISPLAY_BUFFER_SIZE];
 
 #endif /* INC_GAME_BITMAP_H_ */

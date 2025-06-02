@@ -17,6 +17,7 @@
 #include "game_tetris.h"
 #include "game_pong.h"
 #include "game_breakout.h"
+#include "game_space_invaders.h"
 
 // ======= Macros/Constants ===== //
 // ----- //
@@ -34,11 +35,7 @@ static void game_init(void);
 void handle_menu_playing(void)
 {
 	game_reset_configs(current_game_type);
-
-	input_enabled = false;
 	game_draw_start_screen();
-	input_enabled = true;
-
 	game_reset_timers();
 	game_init();
 }
@@ -73,12 +70,10 @@ static void game_init(void)
 		game_breakout(&game);
 		break;
 	}
-	/* to do: complete other games
-	case GAME_5:
+	case GAME_SPCINV:
 	{
 		break;
 	}
-	*/
 	default:
 	{
 		current_menu_state = MENU_MAIN;

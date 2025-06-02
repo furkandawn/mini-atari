@@ -94,7 +94,6 @@ static void handle_current_menu_action(void)
 	{
 		current_menu_state = MENU_MAIN;
 		current_menu_action = MENU_ACTION_START;
-		current_game_type = GAME_SNAKE;
 		break;
 	}
 	default:

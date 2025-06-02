@@ -14,6 +14,7 @@
 
 // include mini-atari libraries
 #include "game_runtime.h"
+#include "game_ui.h"
 #include "menu_paused.h"
 #include "joystick.h"
 
@@ -174,23 +175,18 @@ static void snake_update(game_snake_t *game)
 	}
 
 	// snake wall-collision
-	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT)
+	if (head.x >= DISPLAY_WIDTH || head.y >= DISPLAY_HEIGHT || head.x < 0 || head.y < 0)
 	{
-		game_over = true;
+		game_lose_life();
 		return;
 	}
 
-	if (head.x <= 0 || head.y <= 0)
-	{
-		game_over = true;
-		return;
-	}
-	// checks if the head collides with any of the segments
+	// self-collision
 	for (int i = 1; i < game->length; i++)
 	{
 		if (head.x == game->segments[i].x && head.y == game->segments[i].y)
 		{
-			game_over = true;
+			game_lose_life();
 			break;
 		}
 	}

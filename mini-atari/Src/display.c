@@ -31,9 +31,9 @@ uint8_t font_width(display_font_t display_font)
 	case display_font_6x8:		return 6;
 	case display_font_7x10:		return 7;
 	case display_font_11x18:	return 11;
-	case display_font_16x15:	return 16;
+	//case display_font_16x15:	return 16;
 	case display_font_16x24:	return 16;
-	case display_font_16x26:	return 16;
+	//case display_font_16x26:	return 16;
 	default: return 6;
 	}
 }
@@ -45,9 +45,9 @@ uint8_t font_height(display_font_t display_font)
 	case display_font_6x8:		return 8;
 	case display_font_7x10:		return 10;
 	case display_font_11x18:	return 18;
-	case display_font_16x15:	return 15;
+	//case display_font_16x15:	return 15;
 	case display_font_16x24:	return 24;
-	case display_font_16x26:	return 26;
+	//case display_font_16x26:	return 26;
 	default: return 8;
 	}
 }

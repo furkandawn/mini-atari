@@ -21,6 +21,7 @@ typedef struct
 	uint8_t score_for_level;
 	uint8_t max_level;
 	bool level_up_animation;
+	uint8_t life;
 } game_config_t;
 
 extern const game_config_t game_configs[GAME_COUNT];

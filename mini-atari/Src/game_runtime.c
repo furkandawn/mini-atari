@@ -44,6 +44,7 @@ void game_reset_configs(game_type_t type)
 	game_runtime.delay_ms = game_configs[type].initial_delay_ms;
 	game_over = false;
 	gameover_animation_shown = false;
+	game_runtime.life = game_configs[type].life;
 }
 
 // Initializes all time related variables
@@ -80,6 +81,25 @@ void game_update_progress(void)
 			game_runtime.delay_ms -= cfg->delay_decrement;
 		}
 	}
+}
+
+// returns true to respawn entities in whatever game player is
+bool game_lose_life(void)
+{
+	if (game_runtime.life <= 1)
+	{
+		game_runtime.life = 0;
+		game_over = true;
+		return false;
+	}
+	else
+	{
+		game_draw_remaining_lives();
+		game_runtime.life--;
+		return true;
+	}
+
+	return false;
 }
 
 // Getter Functions

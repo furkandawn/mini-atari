@@ -19,6 +19,7 @@ typedef struct
 	uint16_t score;
 	uint8_t level;
 	uint16_t delay_ms;
+	uint8_t life;
 } game_runtime_t;
 
 extern uint32_t paused_time;
@@ -28,6 +29,7 @@ extern bool game_over;
 void game_reset_configs(game_type_t type);
 void game_reset_timers(void);
 void game_update_progress(void);
+bool game_lose_life(void);
 uint16_t game_get_score(void);
 uint8_t game_get_level(void);
 uint16_t game_get_delay_ms(void);

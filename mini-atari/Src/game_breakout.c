@@ -34,7 +34,7 @@
 #define BRICK_HEIGHT GAME_GRID
 #define BRICK_GAP GAME_GRID
 #define BRICK_START_X ((DISPLAY_WIDTH - (COL_SIZE * (BRICK_WIDTH + BRICK_GAP) - BRICK_GAP)) / 2)
-#define BRICK_START_Y (GAME_GRID * 2)
+#define BRICK_START_Y GAME_GRID
 
 // BALL MACROS
 #define BALL_SIZE GAME_GRID
@@ -57,6 +57,7 @@ static uint8_t breakout_bricks[ROW_SIZE][COL_SIZE];
 // ===== Public Global Variables ===== //
 
 // ===== Static Function Declarations ===== //
+static void breakout_respawn(game_breakout_t *game);
 static void breakout_init(game_breakout_t *game);
 static void breakout_draw_bricks(void);
 static void breakout_draw(game_breakout_t *game);
@@ -79,18 +80,8 @@ void game_breakout(game_breakout_t *game)
 }
 
 // ===== Static Function Definitions ===== //
-
-static void breakout_init(game_breakout_t *game)
+static void breakout_respawn(game_breakout_t *game)
 {
-	for (uint8_t row = 0; row < ROW_SIZE; row++)
-	{
-		if (row == 1) continue;
-		for (uint8_t col = 0; col < COL_SIZE; col++)
-		{
-			breakout_bricks[row][col] = 1;
-		}
-	}
-
 	uint8_t paddle_mid_x = ((DISPLAY_WIDTH - PADDLE_LENGTH) / 2) - ((DISPLAY_WIDTH % GAME_GRID));
 	game->paddle.prev_x = game->paddle.x = paddle_mid_x;
 	game->ball.x = paddle_mid_x - BALL_SIZE;
@@ -100,6 +91,20 @@ static void breakout_init(game_breakout_t *game)
 	game->ball.dy = BALL_SPEED_Y;
 
 	breakout_draw_bricks();
+}
+
+static void breakout_init(game_breakout_t *game)
+{
+	for (uint8_t row = 0; row < ROW_SIZE; row++)
+	{
+		if (row == 2) continue;
+		for (uint8_t col = 0; col < COL_SIZE; col++)
+		{
+			breakout_bricks[row][col] = 1;
+		}
+	}
+
+	breakout_respawn(game);
 }
 
 static void breakout_draw_bricks(void)
@@ -193,12 +198,12 @@ static void breakout_collision(game_breakout_t *game)
         {
             if (!breakout_bricks[row][col]) continue;
 
-            int brick_x = BRICK_START_X + (col * (BRICK_WIDTH + BRICK_GAP));
-            int brick_y = BRICK_START_Y + (row * (BRICK_HEIGHT + BRICK_GAP));
-            int brick_left   = brick_x;
-            int brick_right  = brick_x + BRICK_WIDTH;
-            int brick_top    = brick_y;
-            int brick_bottom = brick_y + BRICK_HEIGHT;
+            uint8_t brick_x = BRICK_START_X + (col * (BRICK_WIDTH + BRICK_GAP));
+            uint8_t brick_y = BRICK_START_Y + (row * (BRICK_HEIGHT + BRICK_GAP));
+            uint8_t brick_left   = brick_x;
+            uint8_t brick_right  = brick_x + BRICK_WIDTH;
+            uint8_t brick_top    = brick_y;
+            uint8_t brick_bottom = brick_y + BRICK_HEIGHT;
 
             // Check collision with next position
             if (next_ball_right >= brick_left && next_ball_left <= brick_right &&
@@ -226,7 +231,6 @@ static void breakout_collision(game_breakout_t *game)
 					game->ball.dy *= -1;
 				}
 
-				breakout_draw_bricks();
                 game_update_progress();
                 return;
             }
@@ -257,39 +261,37 @@ static void breakout_move_ball(game_breakout_t *game)
 	}
 
 	// paddle bounce
-	if (next_y + BALL_SIZE >= PADDLE_Y && next_y <= PADDLE_Y + GAME_GRID)
+	if (next_y + BALL_SIZE >= PADDLE_Y && next_y <= PADDLE_Y + GAME_GRID &&
+		next_x + BALL_SIZE >= game->paddle.x && next_x <= game->paddle.x + PADDLE_LENGTH)
 	{
-	    if (next_x + BALL_SIZE >= game->paddle.x && next_x <= game->paddle.x + PADDLE_LENGTH)
-	    {
-	        game->ball.dy *= -1;
+		game->ball.dy *= -1;
 
-	        uint8_t paddle_center = game->paddle.x + PADDLE_LENGTH / 2;
-	        uint8_t ball_center = next_x + BALL_SIZE / 2;
+		uint8_t paddle_center = game->paddle.x + PADDLE_LENGTH / 2;
+		uint8_t ball_center = next_x + BALL_SIZE / 2;
 
-	        if (ball_center < paddle_center)
-	        {
-	        	if (game->ball.dx > 0)
-	        		game->ball.dx *= -1;
-	        	else
-	        		game->ball.dx *= 1;
+		if (ball_center < paddle_center)
+		{
+			if (game->ball.dx > 0)
+				game->ball.dx *= -1;
+			else
+				game->ball.dx *= 1;
 
-	        }
-	        else if (ball_center > paddle_center)
-	        {
-	        	if (game->ball.dx < 0)
-	        		game->ball.dx *= -1;
-	        	else
-	        		game->ball.dx *= 1;
-	        }
-	        // if exactly in the center, keep dx as is
+		}
+		else if (ball_center > paddle_center)
+		{
+			if (game->ball.dx < 0)
+				game->ball.dx *= -1;
+			else
+				game->ball.dx *= 1;
+		}
+		// if exactly in the center, keep dx as is
 
-	        next_y = game->ball.y + game->ball.dy;
-	    }
+		next_y = game->ball.y + game->ball.dy;
 	}
 
 	if (game->ball.y > BALL_Y_MAX)
 	{
-		game_over = true;
+		if (game_lose_life()) breakout_respawn(game);
 		return;
 	}
 
