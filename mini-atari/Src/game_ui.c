@@ -76,34 +76,39 @@ void game_draw_remaining_lives(void)
 {
 	input_enabled = false;
 
-	char buffer[32];
-	buffer[0] = '\0';
+	display_clear();
 
+	uint8_t gap_between_hearts = 6;
+	uint8_t start_x = ((DISPLAY_WIDTH - (game_runtime.life * BITMAP_HEART_WIDTH) - ((game_runtime.life - 1) * gap_between_hearts)) / 2);
+	uint8_t y = ((DISPLAY_HEIGHT - BITMAP_HEART_HEIGHT) / 2);
+
+	uint8_t x = start_x;
 	for (uint8_t i = 0; i < game_runtime.life; i++)
 	{
-		strcat(buffer, LIFE_SYMBOL);
+		if (i == game_runtime.life - 1)
+			display_draw_bitmap(x, y, game_broken_heart_bitmap, BITMAP_HEART_HEIGHT, BITMAP_HEART_HEIGHT, display_color_white);
+		else
+			display_draw_bitmap(x, y, game_heart_bitmap, BITMAP_HEART_HEIGHT, BITMAP_HEART_HEIGHT, display_color_white);
+
+		x += (BITMAP_HEART_WIDTH + gap_between_hearts);
 	}
 
-	display_clear();
-	display_write_horizontal_string("LIVES:", 0, display_font_11x18, display_color_white);
-	display_write_centered_string(buffer, display_font_11x18, display_color_white);
 	display_update();
 
-	HAL_Delay(1000);
+	HAL_Delay(1500);
 
-	buffer[0] = '\0';
+	display_clear();
 
+	x = start_x;
 	for (uint8_t i = 0; i < game_runtime.life - 1; i++)
 	{
-		strcat(buffer, LIFE_SYMBOL);
+		display_draw_bitmap(x, y, game_heart_bitmap, BITMAP_HEART_HEIGHT, BITMAP_HEART_HEIGHT, display_color_white);
+		x += (BITMAP_HEART_WIDTH + gap_between_hearts);
 	}
 
-	display_clear();
-	display_write_horizontal_string("LIVES:", 0, display_font_11x18, display_color_white);
-	display_write_centered_string(buffer, display_font_11x18, display_color_white);
 	display_update();
 
-	HAL_Delay(1000);
+	HAL_Delay(1500);
 
 	input_enabled = true;
 }
@@ -126,10 +131,18 @@ void game_draw_you_win(void)
 		HAL_Delay(300);
 	}
 
-	display_clear();
-	display_write_centered_string("YOU WIN", display_font_16x24, display_color_white);
-	display_update();
+	char *you_win = "YOU WIN!";
+	buffer[0] = '\0';
 
+	for (uint8_t i = 0; i < strlen("YOU WIN!"); i++)
+	{
+		buffer[i] = you_win[i];
+		buffer[i + 1] = '\0';
+		display_clear();
+		display_write_centered_string(buffer, display_font_11x18, display_color_white);
+		display_update();
+		HAL_Delay(30);
+	}
 	HAL_Delay(1000);
 
 	input_enabled = true;

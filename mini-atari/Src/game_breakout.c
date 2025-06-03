@@ -23,6 +23,7 @@
 #include "stm32f0xx_hal.h"	//	For HAL_Delay()
 #include <stdlib.h>			//	For rand()
 #include <stdio.h>			// for snprintf()
+#include <string.h>			// for memset()
 
 // ======= Macros/Constants ===== //
 #define GAME_GRID 3
@@ -87,7 +88,7 @@ static void breakout_respawn(game_breakout_t *game)
 {
 	uint8_t paddle_mid_x = ((DISPLAY_WIDTH - PADDLE_LENGTH) / 2) - ((DISPLAY_WIDTH % GAME_GRID));
 	game->paddle.prev_x = game->paddle.x = paddle_mid_x;
-	game->ball.x =(((DISPLAY_WIDTH - BALL_SIZE) / 2) - (DISPLAY_WIDTH % BALL_SIZE));
+	game->ball.x =(((DISPLAY_WIDTH - BALL_SIZE) / 2) - (DISPLAY_WIDTH % BALL_SIZE) - BALL_SIZE);
 	game->ball.y = (PADDLE_Y - (BALL_SIZE * 4));
 
 	game->ball.dx = BALL_SPEED_X;
@@ -98,8 +99,9 @@ static void breakout_respawn(game_breakout_t *game)
 
 static void breakout_init(game_breakout_t *game)
 {
-	setup_level(game);
+	memset(breakout_bricks, 0, sizeof(breakout_bricks));
 
+	setup_level(game);
 	breakout_respawn(game);
 }
 
@@ -334,8 +336,8 @@ static void breakout_move_ball(game_breakout_t *game)
 	}
 
 	// paddle bounce
-	if (next_y + BALL_SIZE >= PADDLE_Y && next_y <= PADDLE_Y + GAME_GRID &&
-		next_x + BALL_SIZE >= game->paddle.x && next_x <= game->paddle.x + PADDLE_LENGTH)
+	if (next_y >= PADDLE_Y && game->ball.y <= PADDLE_Y + GAME_GRID &&
+		next_x + BALL_SIZE >= game->paddle.x && game->ball.x <= game->paddle.x + PADDLE_LENGTH)
 	{
 		game->ball.dy *= -1;
 
@@ -383,9 +385,9 @@ static void breakout_update(game_breakout_t *game)
 		breakout_draw_bricks();
 	}
 
+	breakout_draw(game);
 	breakout_move_paddle(game);
 	breakout_move_ball(game);
-	breakout_draw(game);
 
 	if (are_bricks_cleared())
 	{

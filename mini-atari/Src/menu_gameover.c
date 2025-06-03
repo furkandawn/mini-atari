@@ -23,6 +23,7 @@
 #include "stm32f0xx_hal.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include "string.h"
 
 // ======= Macros/Constants ===== //
 // ----- //
@@ -68,21 +69,31 @@ void handle_menu_gameover(void)
 
 static void draw_animated_menu_gameover(void)
 {
+	char *game_over = "GAME OVER!";
+	char buffer[32];
+	buffer[0] = '\0';
+
+	for (uint8_t i = 0; i < strlen("GAME OVER!"); i++)
+	{
+		buffer[i] = game_over[i];
+		buffer[i + 1] = '\0';
+		display_clear();
+		display_write_centered_string(buffer, display_font_11x18, display_color_white);
+		display_update();
+		HAL_Delay(20);
+	}
+	HAL_Delay(500);
+
 	display_clear();
+
 	uint8_t y = 0;
-
-	display_write_centered_string("GAME OVER!", display_font_11x18, display_color_white);
-	display_update();
-	HAL_Delay(2000);
-
-	display_clear();
-
 	display_write_horizontal_string(">---YOUR STATS---<",  y, display_font_7x10, display_color_white);
 	display_update();
 	HAL_Delay(1000);
 
+
 	y += (font_height(display_font_7x10) * 2);
-	char buffer[48];
+	buffer[0] = '\0';
 	snprintf(buffer, sizeof(buffer), "Score:%d Time:%ds", game_get_score(), game_get_time_spent());
 	display_write_horizontal_string(buffer, y, display_font_6x8, display_color_white);
 	display_update();

@@ -89,9 +89,11 @@ void game_update_level(void)
 	game_draw_level_up_animation();
 }
 
-// returns true to respawn entities in whatever game player is
+// returns true to respawn entities at whatever game player is in
 bool game_lose_life(void)
 {
+	game_draw_remaining_lives();
+
 	if (game_runtime.life <= 1)
 	{
 		game_runtime.life = 0;
@@ -100,7 +102,6 @@ bool game_lose_life(void)
 	}
 	else
 	{
-		game_draw_remaining_lives();
 		game_runtime.life--;
 		return true;
 	}
