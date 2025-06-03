@@ -60,7 +60,7 @@ void handle_menu_gameover(void)
 	}
 
 	navigate_menu_gameover();
-	if(joystick_is_pressed() || button_is_pressed()) handle_current_gameover_action();
+	if(is_joystick_pressed() || is_button_pressed()) handle_current_gameover_action();
 }
 
 // ===== Static Function Definitions ===== //

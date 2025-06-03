@@ -25,6 +25,7 @@
 // ======= Macros/Constants ===== //
 #define COUNTDOWN 3
 #define LIFE_SYMBOL "<3 "
+#define EXCLAMATION_SYMBOL "!"
 
 // ===== Public API Function Definitions ===== //
 void game_draw_start_screen(void)
@@ -84,6 +85,7 @@ void game_draw_remaining_lives(void)
 	}
 
 	display_clear();
+	display_write_horizontal_string("LIVES:", 0, display_font_11x18, display_color_white);
 	display_write_centered_string(buffer, display_font_11x18, display_color_white);
 	display_update();
 
@@ -97,7 +99,35 @@ void game_draw_remaining_lives(void)
 	}
 
 	display_clear();
+	display_write_horizontal_string("LIVES:", 0, display_font_11x18, display_color_white);
 	display_write_centered_string(buffer, display_font_11x18, display_color_white);
+	display_update();
+
+	HAL_Delay(1000);
+
+	input_enabled = true;
+}
+
+void game_draw_you_win(void)
+{
+	input_enabled = false;
+
+	char buffer[32];
+	buffer[0] = '\0';
+
+	for (uint8_t i = 0; i < 5; i++)
+	{
+		strcat(buffer, EXCLAMATION_SYMBOL);
+
+		display_clear();
+		display_write_centered_string(buffer, display_font_16x24, display_color_white);
+		display_update();
+
+		HAL_Delay(300);
+	}
+
+	display_clear();
+	display_write_centered_string("YOU WIN", display_font_16x24, display_color_white);
 	display_update();
 
 	HAL_Delay(1000);

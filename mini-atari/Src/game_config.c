@@ -25,8 +25,8 @@ const game_config_t game_configs[GAME_COUNT] =
 
 		[GAME_TETRIS] =
 		{
-			.initial_delay_ms = 300,
-			.min_delay_ms = 100,
+			.initial_delay_ms = 450,
+			.min_delay_ms = 250,
 			.delay_decrement = 50,
 			.score_per_action = 10,
 			.score_for_level = 50,
@@ -40,7 +40,7 @@ const game_config_t game_configs[GAME_COUNT] =
 			.initial_delay_ms = 20,
 			.min_delay_ms = 20,
 			.delay_decrement = 0,
-			.score_per_action = 1,
+			.score_per_action = 0,
 			.score_for_level = 0,
 			.max_level = 1,
 			.level_up_animation = false,
@@ -49,19 +49,19 @@ const game_config_t game_configs[GAME_COUNT] =
 
 		[GAME_BREAKOUT] =
 		{
-			.initial_delay_ms = 10,
-			.min_delay_ms = 10,
+			.initial_delay_ms = 1,
+			.min_delay_ms = 0,
 			.delay_decrement = 0,
 			.score_per_action = 10,
-			.score_for_level = 50,
-			.max_level = 5,
+			.score_for_level = 0,
+			.max_level = 0,
 			.level_up_animation = false,
 			.life = 3
 		},
 
 		[GAME_SPCINV] =
 		{
-			.initial_delay_ms = 0,
+			.initial_delay_ms = 1,
 			.min_delay_ms = 0,
 			.delay_decrement = 0,
 			.score_per_action = 0,

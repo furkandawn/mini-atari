@@ -291,7 +291,7 @@ static uint16_t pong_calculate_score(game_pong_t *game)
 
 static void pong_update(game_pong_t *game)
 {
-	if (joystick_is_pressed() || button_is_pressed())
+	if (is_joystick_pressed() || is_button_pressed())
 	{
 		game_pause();
 

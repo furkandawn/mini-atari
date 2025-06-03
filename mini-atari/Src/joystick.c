@@ -42,7 +42,7 @@ joystick_direction_t joystick_direction(void)
 	else return DIRECTION_NONE;
 }
 
-bool joystick_is_pressed(void)
+bool is_joystick_pressed(void)
 {
 	if (joystick_pressed_flag)
 	{
@@ -52,7 +52,7 @@ bool joystick_is_pressed(void)
 	return false;
 }
 
-bool button_is_pressed(void)
+bool is_button_pressed(void)
 {
 	if (button_pressed_flag)
 	{

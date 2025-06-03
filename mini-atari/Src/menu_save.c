@@ -79,12 +79,12 @@ void handle_menu_save(void)
 	if (is_letter_focused)
 	{
 		navigate_alphabet();
-		if (joystick_is_pressed() || button_is_pressed()) handle_selected_letter_input();
+		if (is_joystick_pressed() || is_button_pressed()) handle_selected_letter_input();
 	}
 	else
 	{
 		navigate_save_action();
-		if (joystick_is_pressed() || button_is_pressed()) handle_current_save_action();
+		if (is_joystick_pressed() || is_button_pressed()) handle_current_save_action();
 	}
 }
 
@@ -206,7 +206,7 @@ static void handle_not_eligible(void)
 {
 	bool drawn_once = false;
 
-	while (!joystick_is_pressed() || button_is_pressed())
+	while (!is_joystick_pressed() || is_button_pressed())
 	{
 		if (!drawn_once)
 		{

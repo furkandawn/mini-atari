@@ -155,7 +155,7 @@ static void snake_spawn_food(game_snake_t *game)
 
 static void snake_update(game_snake_t *game)
 {
-	if (joystick_is_pressed() || button_is_pressed()) game_pause();
+	if (is_joystick_pressed() || is_button_pressed()) game_pause();
 	if (game_over || current_menu_state != MENU_PLAYING) return;
 
 	snake_draw(game);

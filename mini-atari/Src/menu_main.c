@@ -39,7 +39,7 @@ static void navigate_menu_main(void);
 void handle_menu_main(void)
 {
 	navigate_menu_main();
-	if (joystick_is_pressed() || button_is_pressed()) current_menu_state = MENU_SELECTED;
+	if (is_joystick_pressed() || is_button_pressed()) current_menu_state = MENU_SELECTED;
 }
 
 // ===== Static Function Definitions ===== //

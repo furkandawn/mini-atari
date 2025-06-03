@@ -55,10 +55,13 @@
 static uint8_t breakout_bricks[ROW_SIZE][COL_SIZE];
 
 // ===== Public Global Variables ===== //
+// ----- //
 
 // ===== Static Function Declarations ===== //
 static void breakout_respawn(game_breakout_t *game);
 static void breakout_init(game_breakout_t *game);
+static void setup_level(game_breakout_t *game);
+static bool are_bricks_cleared(void);
 static void breakout_draw_bricks(void);
 static void breakout_draw(game_breakout_t *game);
 static void breakout_move_paddle(game_breakout_t *game);
@@ -84,8 +87,8 @@ static void breakout_respawn(game_breakout_t *game)
 {
 	uint8_t paddle_mid_x = ((DISPLAY_WIDTH - PADDLE_LENGTH) / 2) - ((DISPLAY_WIDTH % GAME_GRID));
 	game->paddle.prev_x = game->paddle.x = paddle_mid_x;
-	game->ball.x = paddle_mid_x - BALL_SIZE;
-	game->ball.y = (PADDLE_Y - (GAME_GRID * 4));
+	game->ball.x =(((DISPLAY_WIDTH - BALL_SIZE) / 2) - (DISPLAY_WIDTH % BALL_SIZE));
+	game->ball.y = (PADDLE_Y - (BALL_SIZE * 4));
 
 	game->ball.dx = BALL_SPEED_X;
 	game->ball.dy = BALL_SPEED_Y;
@@ -95,16 +98,86 @@ static void breakout_respawn(game_breakout_t *game)
 
 static void breakout_init(game_breakout_t *game)
 {
-	for (uint8_t row = 0; row < ROW_SIZE; row++)
-	{
-		if (row == 2) continue;
-		for (uint8_t col = 0; col < COL_SIZE; col++)
-		{
-			breakout_bricks[row][col] = 1;
-		}
-	}
+	setup_level(game);
 
 	breakout_respawn(game);
+}
+
+static void setup_level(game_breakout_t *game)
+{
+	uint8_t fill_row[ROW_SIZE] = {0};
+	uint8_t skip_col[COL_SIZE] = {0};
+	bool set_level = false;
+
+	switch(game_get_level())
+	{
+	case 1:
+		fill_row[2] = 1;
+		fill_row[1] = 1;
+		for (uint8_t i = 0; i < 3; i++)
+		{
+			skip_col[i] = 1;
+			skip_col[COL_SIZE - 1 - i] = 1;
+		}
+		set_level = true;
+		break;
+
+	case 2:
+		fill_row[3] = 1;
+		fill_row[2] = 1;
+		fill_row[1] = 1;
+		for (uint8_t i = 4; i < 8; i++)
+		{
+			skip_col[i] = 1;
+		}
+		set_level = true;
+		break;
+
+	case 3:
+		fill_row[4] = 1;
+		fill_row[3] = 1;
+		fill_row[1] = 1;
+		fill_row[0] = 1;
+		for (uint8_t i = 5; i < 7; i++)
+		{
+			skip_col[i] = 1;
+		}
+		set_level = true;
+		break;
+
+	default:
+		game_win();
+		game_over = true;
+		set_level = false;
+		break;
+	}
+
+	if (set_level)
+	{
+		for (uint8_t row = 0; row < ROW_SIZE; row++)
+		{
+			if (!fill_row[row]) continue;
+			for (uint8_t col = 0; col < COL_SIZE; col++)
+			{
+				if (skip_col[col]) continue;
+				breakout_bricks[row][col] = 1;
+			}
+		}
+
+		breakout_respawn(game);
+	}
+}
+
+static bool are_bricks_cleared(void)
+{
+	for (uint8_t row = 0; row < ROW_SIZE; row++)
+	{
+		for (uint8_t col = 0; col < COL_SIZE; col++)
+		{
+			if (breakout_bricks[row][col]) return false;
+		}
+	}
+	return true;
 }
 
 static void breakout_draw_bricks(void)
@@ -301,7 +374,7 @@ static void breakout_move_ball(game_breakout_t *game)
 
 static void breakout_update(game_breakout_t *game)
 {
-	if (joystick_is_pressed() || button_is_pressed())
+	if (is_joystick_pressed() || is_button_pressed())
 	{
 		game_pause();
 
@@ -313,6 +386,12 @@ static void breakout_update(game_breakout_t *game)
 	breakout_move_paddle(game);
 	breakout_move_ball(game);
 	breakout_draw(game);
+
+	if (are_bricks_cleared())
+	{
+		game_update_level();
+		setup_level(game);
+	}
 
 	HAL_Delay(game_runtime.delay_ms);
 }

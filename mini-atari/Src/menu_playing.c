@@ -72,6 +72,8 @@ static void game_init(void)
 	}
 	case GAME_SPCINV:
 	{
+		game_spcinv_t game;
+		game_spcinv(&game);
 		break;
 	}
 	default:

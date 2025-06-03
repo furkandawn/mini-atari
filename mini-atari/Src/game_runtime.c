@@ -83,6 +83,12 @@ void game_update_progress(void)
 	}
 }
 
+void game_update_level(void)
+{
+	game_runtime.level++;
+	game_draw_level_up_animation();
+}
+
 // returns true to respawn entities in whatever game player is
 bool game_lose_life(void)
 {
@@ -100,6 +106,11 @@ bool game_lose_life(void)
 	}
 
 	return false;
+}
+
+void game_win(void)
+{
+	game_draw_you_win();
 }
 
 // Getter Functions

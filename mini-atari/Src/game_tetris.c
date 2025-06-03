@@ -299,10 +299,10 @@ static void tetris_clear_line(void)
 
 static void tetris_update(game_tetris_t *game)
 {
-	if (joystick_is_pressed()) game_pause();
+	if (is_joystick_pressed()) game_pause();
 	if (game_over || current_menu_state != MENU_PLAYING) return;
 
-	if (button_is_pressed()) tetrimino_rotate(game);
+	if (is_button_pressed()) tetrimino_rotate(game);
 
 	tetrimino_move(game);
 
