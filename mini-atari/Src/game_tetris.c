@@ -36,11 +36,7 @@ static uint8_t board[TETRIS_BOARD_HEIGHT][TETRIS_BOARD_WIDTH] = {0};
 static uint8_t next_tetrimino_index;
 static uint8_t tetrimino_landed_y;
 static bool direction_down_flag = false;
-static const uint8_t speedup_delay = 60;
-
-// game input delay
-static uint32_t last_update;
-static uint32_t last_input;
+static const uint8_t speedup_delay = 50;
 
 // ===== Public Global Variables ===== //
 
@@ -161,7 +157,6 @@ static void tetris_draw(game_tetris_t *game)
 static void tetris_init(game_tetris_t *game)
 {
 	memset(board, 0, sizeof(board));
-	last_update = last_input = HAL_GetTick();
 	next_tetrimino_index = rand() % TETRIMINO_TYPE_COUNT;
 	tetrimino_spawn(game);
 }
@@ -229,13 +224,29 @@ static void tetrimino_move(game_tetris_t *game)
 
 static void tetrimino_rotate(game_tetris_t *game)
 {
-	uint8_t original_rotation = game->rotation;
 	game->rotation = ((game->rotation + 1) % tetriminos[game->type].rotation_count);
 
-	// revert if new rotation hits the walls
+	// kick back if the tetrimino hits wall
 	if (!tetrimino_can_move(game, 0, 0))
 	{
-		game->rotation = original_rotation;
+		// kick tetrimino to the left
+		if (game->x >= TETRIS_BOARD_WIDTH + GAME_OFFSET)
+		{
+			while (!tetrimino_can_move(game, 1, 0))
+			{
+				game->x -= GAME_GRID;
+			}
+			game->x += GAME_GRID;
+		}
+		// kick tetrimino to the right
+		else if (game->x <= GAME_OFFSET)
+		{
+			while (!tetrimino_can_move(game, -1, 0))
+			{
+				game->x += GAME_GRID;
+			}
+			game->x -= GAME_GRID;
+		}
 	}
 }
 
@@ -304,6 +315,8 @@ static void tetris_update(game_tetris_t *game)
 
 	if (is_button_pressed()) tetrimino_rotate(game);
 
+	tetris_draw(game);
+
 	tetrimino_move(game);
 
 	// gravity
@@ -317,8 +330,6 @@ static void tetris_update(game_tetris_t *game)
 		tetris_clear_line();
 		tetrimino_spawn(game);
 	}
-
-	tetris_draw(game);
 
 	if (direction_down_flag)
 	{

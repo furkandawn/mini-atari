@@ -25,8 +25,8 @@ const game_config_t game_configs[GAME_COUNT] =
 
 		[GAME_TETRIS] =
 		{
-			.initial_delay_ms = 450,
-			.min_delay_ms = 250,
+			.initial_delay_ms = 350,
+			.min_delay_ms = 150,
 			.delay_decrement = 50,
 			.score_per_action = 10,
 			.score_for_level = 50,

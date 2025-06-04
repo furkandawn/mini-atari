@@ -300,9 +300,9 @@ static void pong_update(game_pong_t *game)
 		pong_draw_borders();
 	}
 
+	pong_draw(game);
 	pong_move_paddle(game);
 	pong_move_ball(game);
-	pong_draw(game);
 
 	if(pong_check_score(game))
 	{
