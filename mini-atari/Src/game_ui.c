@@ -94,7 +94,7 @@ void game_draw_remaining_lives(void)
 
 	display_update();
 
-	HAL_Delay(1500);
+	HAL_Delay(1000);
 
 	display_clear();
 
@@ -107,7 +107,7 @@ void game_draw_remaining_lives(void)
 
 	display_update();
 
-	HAL_Delay(1500);
+	HAL_Delay(1000);
 
 	input_enabled = true;
 }
@@ -127,7 +127,7 @@ void game_draw_you_win(void)
 		display_write_centered_string(buffer, display_font_16x24, display_color_white);
 		display_update();
 
-		HAL_Delay(300);
+		HAL_Delay(200);
 	}
 
 	char *you_win = "YOU WIN!";
@@ -140,7 +140,7 @@ void game_draw_you_win(void)
 		display_clear();
 		display_write_centered_string(buffer, display_font_11x18, display_color_white);
 		display_update();
-		HAL_Delay(30);
+		HAL_Delay(15);
 	}
 	HAL_Delay(1000);
 
@@ -160,7 +160,7 @@ void game_draw_game_over(void)
 		display_clear();
 		display_write_centered_string(buffer, display_font_11x18, display_color_white);
 		display_update();
-		HAL_Delay(20);
+		HAL_Delay(15);
 	}
 	HAL_Delay(1000);
 }

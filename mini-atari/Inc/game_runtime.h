@@ -32,6 +32,7 @@ void game_reset_timers(void);
 void game_update_progress(void);
 void game_update_level(void);
 bool game_lose_life(void);
+void game_end(void);
 uint16_t game_get_score(void);
 uint8_t game_get_level(void);
 uint16_t game_get_delay_ms(void);

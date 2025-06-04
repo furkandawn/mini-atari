@@ -34,6 +34,7 @@ typedef struct
 joystick_direction_t joystick_direction(void);
 bool is_joystick_pressed(void);
 bool is_button_pressed(void);
+bool is_button_held(void);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 #endif /* INC_JOYSTICK_H_ */

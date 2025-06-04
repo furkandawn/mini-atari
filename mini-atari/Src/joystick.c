@@ -62,6 +62,11 @@ bool is_button_pressed(void)
 	return false;
 }
 
+bool is_button_held(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == GPIO_PIN_RESET;
+}
+
 // ===== Static Function Definitions ===== //
 static joystick_data_t joystick_read(void)
 {

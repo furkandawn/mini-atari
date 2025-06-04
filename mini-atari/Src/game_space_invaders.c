@@ -9,6 +9,7 @@
 #include "game_space_invaders.h"
 
 // ===== Includes ===== //
+#include "game_space_invaders_config.h"
 // include display library
 #include "display_interface.h"
 
@@ -22,163 +23,22 @@
 #include "stm32f0xx_hal.h"
 
 // ======= Macros/Constants ===== //
-#define GAME_GRID 3						// not supported for now
-#define ENTITY_WIDTH_PX 16
-#define ENTITY_HEIGHT_PX 8
-#define ENTITY_BITMAP_SIZE (ENTITY_WIDTH_PX * ENTITY_HEIGHT_PX / 8)
-#define ROW_HEIGHT (4 + ENTITY_HEIGHT_PX)
-#define ENTITY_X_MIN GAME_GRID
-#define ENTITY_X_MAX (DISPLAY_WIDTH - ENTITY_WIDTH_PX - GAME_GRID)
+#define GAME_GRID 3 // change GAME_GRID in "game_space_invaders_config.c" as well if you change this
 #define MAX_ROW_NUMBER 5
-#define ENTITY_BULLET_SPEED GAME_GRID
+#define ROW_HEIGHT (4 + ENTITY_HEIGHT_PX)
 
-// ----- Spaceship configuration ----- //
-#define SPACESHIP_Y (DISPLAY_HEIGHT - (2 * ENTITY_HEIGHT_PX))
-#define SPACESHIP_SPEED GAME_GRID
-
-// ----- Enemy configuration ----- //
 typedef struct {
     int16_t dx;
     uint32_t last_move_ms;
     uint32_t movement_delay_ms;
 } enemy_row_state_t;
 
-static const spcinv_enemy_t enemy_config[SPCINV_ENEMY_TYPE_COUNT] =
-{
-		[SPCINV_SQUID] =
-		{
-				.x = 0,
-				.y = 0,
-				.dx = GAME_GRID,
-				.points = 10,
-				.life = 1,
-				.alive = true,
-				.horde_number = 7,
-				.movement_delay_ms = 1000,
-				.last_move_ms = 0,
-				.bullet_delay_ms = 7000,
-				.last_bullet_ms = 3000,
-				.type = SPCINV_SQUID
-		},
-
-		[SPCINV_CRAB] =
-		{
-				.x = 0,
-				.y = 0,
-				.dx = GAME_GRID,
-				.points = 30,
-				.life = 2,
-				.alive = true,
-				.horde_number = 5,
-				.movement_delay_ms = 700,
-				.last_move_ms = 0,
-				.bullet_delay_ms = 6000,
-				.last_bullet_ms = 3000,
-				.type = SPCINV_CRAB
-		},
-
-		[SPCINV_OCTOPUS] =
-		{
-				.x = 0,
-				.y = 0,
-				.dx = GAME_GRID,
-				.points = 50,
-				.life = 3,
-				.alive = true,
-				.horde_number = 5,
-				.movement_delay_ms = 400,
-				.last_move_ms = 0,
-				.bullet_delay_ms = 5000,
-				.last_bullet_ms = 3000,
-				.type = SPCINV_OCTOPUS
-		},
-
-		[SPCINV_UFO] =
-		{
-				.x = ((DISPLAY_WIDTH - ENTITY_WIDTH_PX) / 2),
-				.y = 0,
-				.dx = (GAME_GRID * 2),
-				.points = 9999,
-				.life = 10,
-				.alive = true,
-				.horde_number = 1,
-				.movement_delay_ms = 200,
-				.last_move_ms = 0,
-				.bullet_delay_ms = 1500,
-				.last_bullet_ms = 3000,
-				.type = SPCINV_UFO
-		}
-};
-
-// ----- Bitmap Size Definitions ----- //
-static const uint8_t spaceship_bitmap[ENTITY_BITMAP_SIZE] =
-{
-		0x00, 0x08,	// first row
-		0x00, 0x08,
-		0x00, 0x1C,
-		0x00, 0x36,
-		0x00, 0x7F,
-		0x00, 0x49,
-		0x00, 0x1C,
-		0x00, 0x14	// last row
-};
-
-static const uint8_t enemy_bitmap[SPCINV_ENEMY_TYPE_COUNT][ENTITY_BITMAP_SIZE] =
-{
-		[SPCINV_SQUID] =
-		{
-				0x00, 0x18,	// first row
-				0x00, 0x3C,
-				0x00, 0x7E,
-				0x00, 0xDB,
-				0x00, 0xFF,
-				0x00, 0x24,
-				0x00, 0x5A,
-				0x00, 0xA5	// last row
-		},
-
-		[SPCINV_CRAB] =
-		{
-				0x01, 0x04,	// first row
-				0x00, 0x88,
-				0x01, 0xFC,
-				0x03, 0x76,
-				0x07, 0xFF,
-				0x05, 0xFD,
-				0x05, 0x05,
-				0x00, 0xD8	// last row
-		},
-
-		[SPCINV_OCTOPUS] =
-		{
-				0x00, 0xF0,	// first row
-				0x07, 0xFE,
-				0x0F, 0xFF,
-				0x0E, 0x67,
-				0x0F, 0xFF,
-				0x01, 0x98,
-				0x03, 0x6C,
-				0x0C, 0x03	// last row
-		},
-
-		[SPCINV_UFO] =
-		{
-				0x07, 0xE0,	// first row
-				0x1F, 0xF8,
-				0x3F, 0xFC,
-				0x6D, 0xB6,
-				0xFF, 0xFF,
-				0x39, 0x9C,
-				0x10, 0x08,
-				0x00, 0x00	// last row
-		}
-};
-
 // ===== Static File-Private Variables ===== //
 static enemy_row_state_t enemy_rows[MAX_ROW_NUMBER];
 static bool is_row_full[MAX_ROW_NUMBER] = {0};
 
 // ===== Public Global Variables ===== //
+// ----- //
 
 // ===== Static Function Declarations ===== //
 static void spcinv_init(game_spcinv_t *game);
@@ -200,7 +60,8 @@ static void spaceship_move(game_spcinv_t *game);
 static void spaceship_fire(game_spcinv_t *game);
 
 // collision
-static bool is_bitmap_pixel_set(const uint8_t *bitmap, uint8_t x, uint8_t y);
+static bool is_bitmap_pixel_set_16x8(const uint8_t *bitmap, uint8_t x, uint8_t y);
+static bool is_bitmap_pixel_set_8x8(const uint8_t *bitmap, uint8_t x, uint8_t y);
 static void move_bullets(game_spcinv_t *game);
 
 // ===== Public API Function Definitions ===== //
@@ -299,7 +160,7 @@ static void spawn_enemy(game_spcinv_t *game, spcinv_enemy_type_t type)
 		*e = *cfg;
 		e->x = spawn_x;
 		e->y = spawn_y;
-		e->last_bullet_ms += HAL_GetTick();
+		e->last_bullet_ms = HAL_GetTick();
 		e->bullet.active = false;
 		e->bullet.dy = ENTITY_BULLET_SPEED;
 	}
@@ -312,7 +173,7 @@ static void clear_enemy_count(game_spcinv_t *game)
 	for (uint8_t i = 0; i < game->enemy_count; i++)
 	{
 		spcinv_enemy_t *e = &game->enemy[i];
-		if (!e->alive) continue;
+		if (!e->alive && !e->bullet.active) continue;
 
 		game->enemy[new_count++] = *e;
 	}
@@ -334,7 +195,7 @@ static void spaceship_respawn(game_spcinv_t *game)
 
 static void draw_spaceship(game_spcinv_t *game)
 {
-	display_draw_bitmap(game->player.x, SPACESHIP_Y, spaceship_bitmap, ENTITY_WIDTH_PX, ENTITY_HEIGHT_PX, display_color_white);
+	display_draw_bitmap(game->player.x, SPACESHIP_Y, spaceship_bitmap, SPACESHIP_WIDTH_PX, SPACESHIP_HEIGHT_PX, display_color_white);
 }
 
 static void draw_enemy(game_spcinv_t *game)
@@ -435,7 +296,7 @@ static void enemy_fire(game_spcinv_t *game)
 
 		if (!e->bullet.active && now - e->last_bullet_ms > e->bullet_delay_ms)
 		{
-			if (rand() % 5 == 0) continue;
+			if (rand() % 3 == 0) continue;
 
 			e->bullet.x = e->x + (ENTITY_WIDTH_PX / 2);
 			e->bullet.y = e->y + ENTITY_HEIGHT_PX;
@@ -452,13 +313,13 @@ static void spaceship_move(game_spcinv_t *game)
 	switch(direction)
 	{
 	case DIRECTION_LEFT:
-		if (game->player.x > ENTITY_X_MIN) game->player.x -= SPACESHIP_SPEED;
-		if (game->player.x < ENTITY_X_MIN) game->player.x = ENTITY_X_MIN;
+		if (game->player.x > SPACESHIP_X_MIN) game->player.x -= SPACESHIP_SPEED;
+		if (game->player.x < SPACESHIP_X_MIN) game->player.x = SPACESHIP_X_MIN;
 		break;
 
 	case DIRECTION_RIGHT:
-		if (game->player.x < ENTITY_X_MAX) game->player.x += SPACESHIP_SPEED;
-		if (game->player.x > ENTITY_X_MAX) game->player.x = ENTITY_X_MAX;
+		if (game->player.x < SPACESHIP_X_MAX) game->player.x += SPACESHIP_SPEED;
+		if (game->player.x > SPACESHIP_X_MAX) game->player.x = SPACESHIP_X_MAX;
 		break;
 
 	default:
@@ -470,17 +331,29 @@ static void spaceship_fire(game_spcinv_t *game)
 {
 	if (is_button_pressed() && !game->player.bullet.active)
 	{
-		game->player.bullet.x = (game->player.x + ENTITY_WIDTH_PX / 2) + (ENTITY_WIDTH_PX / 4);
+		game->player.bullet.x = (game->player.x + ((SPACESHIP_WIDTH_PX + GAME_GRID) / 2));
 		game->player.bullet.y = SPACESHIP_Y;
-		game->player.bullet.dy = -ENTITY_BULLET_SPEED;
+		game->player.bullet.dy = -SPACESHIP_BULLET_SPEED;
 		game->player.bullet.active = true;
 	}
 }
 
-static bool is_bitmap_pixel_set(const uint8_t *bitmap, uint8_t x, uint8_t y)
+static bool is_bitmap_pixel_set_16x8(const uint8_t *bitmap, uint8_t x, uint8_t y)
 {
+	if (x >= 16 || y >= 8) return false;
+
 	uint8_t byte_index = ((y * 2) + (x / 8));
-	uint8_t bit_index = (7 - (x % 8));
+	uint8_t bit_index = (7 - (x % 8));			// leftmost pixel is bit 7
+
+	return (bitmap[byte_index] >> bit_index) & 0x01;
+}
+
+static bool is_bitmap_pixel_set_8x8(const uint8_t *bitmap, uint8_t x, uint8_t y)
+{
+	if (x >= 8 || y >= 8) return false;
+
+	uint8_t byte_index = y;
+	uint8_t bit_index = (7 - (x % 8));	// leftmost pixel is bit 7
 
 	return (bitmap[byte_index] >> bit_index) & 0x01;
 }
@@ -515,7 +388,7 @@ static void move_bullets(game_spcinv_t *game)
 						uint8_t rel_x = bx - e->x;
 						uint8_t rel_y = by - e->y;
 
-						if (is_bitmap_pixel_set(enemy_bitmap[e->type], rel_x, rel_y))
+						if (is_bitmap_pixel_set_16x8(enemy_bitmap[e->type], rel_x, rel_y))
 						{
 							game->player.bullet.active = false;
 							e->life--;
@@ -543,13 +416,13 @@ static void move_bullets(game_spcinv_t *game)
 					uint8_t bx = e->bullet.x + dx;
 					uint8_t by = e->bullet.y + dy;
 
-					if (bx >= game->player.x && bx < game->player.x + ENTITY_WIDTH_PX &&
-						by >= SPACESHIP_Y && by < SPACESHIP_Y + ENTITY_HEIGHT_PX)
+					if (bx >= game->player.x && bx < game->player.x + SPACESHIP_WIDTH_PX &&
+						by >= SPACESHIP_Y && by < SPACESHIP_Y + SPACESHIP_HEIGHT_PX)
 					{
 						uint8_t rel_x = bx - game->player.x;
 						uint8_t rel_y = by - SPACESHIP_Y;
 
-						if (is_bitmap_pixel_set(spaceship_bitmap, rel_x, rel_y))
+						if (is_bitmap_pixel_set_8x8(spaceship_bitmap, rel_x, rel_y))
 						{
 							e->bullet.active = false;
 							if (game_lose_life()) spaceship_respawn(game);
