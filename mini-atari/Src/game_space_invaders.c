@@ -57,7 +57,7 @@ static const spcinv_enemy_t enemy_config[SPCINV_ENEMY_TYPE_COUNT] =
 				.movement_delay_ms = 1000,
 				.last_move_ms = 0,
 				.bullet_delay_ms = 7000,
-				.last_bullet_ms = 2000,
+				.last_bullet_ms = 3000,
 				.type = SPCINV_SQUID
 		},
 
@@ -73,7 +73,7 @@ static const spcinv_enemy_t enemy_config[SPCINV_ENEMY_TYPE_COUNT] =
 				.movement_delay_ms = 700,
 				.last_move_ms = 0,
 				.bullet_delay_ms = 6000,
-				.last_bullet_ms = 2000,
+				.last_bullet_ms = 3000,
 				.type = SPCINV_CRAB
 		},
 
@@ -89,7 +89,7 @@ static const spcinv_enemy_t enemy_config[SPCINV_ENEMY_TYPE_COUNT] =
 				.movement_delay_ms = 400,
 				.last_move_ms = 0,
 				.bullet_delay_ms = 5000,
-				.last_bullet_ms = 2000,
+				.last_bullet_ms = 3000,
 				.type = SPCINV_OCTOPUS
 		},
 
@@ -105,7 +105,7 @@ static const spcinv_enemy_t enemy_config[SPCINV_ENEMY_TYPE_COUNT] =
 				.movement_delay_ms = 200,
 				.last_move_ms = 0,
 				.bullet_delay_ms = 1500,
-				.last_bullet_ms = 2000,
+				.last_bullet_ms = 3000,
 				.type = SPCINV_UFO
 		}
 };
@@ -208,7 +208,7 @@ void game_spcinv(game_spcinv_t *game)
 {
 	spcinv_init(game);
 
-	while (!game_over && current_menu_state == MENU_PLAYING)
+	while (!game_over_flag && !game_win_flag && current_menu_state == MENU_PLAYING)
 	{
 		spcinv_update(game);
 	}
@@ -264,8 +264,7 @@ static void setup_level(game_spcinv_t *game)
 		break;
 
 	default:
-		game_win();
-		game_over = true;
+		game_win_flag = true;
 		break;
 	}
 }
@@ -300,6 +299,7 @@ static void spawn_enemy(game_spcinv_t *game, spcinv_enemy_type_t type)
 		*e = *cfg;
 		e->x = spawn_x;
 		e->y = spawn_y;
+		e->last_bullet_ms += HAL_GetTick();
 		e->bullet.active = false;
 		e->bullet.dy = ENTITY_BULLET_SPEED;
 	}
@@ -470,7 +470,7 @@ static void spaceship_fire(game_spcinv_t *game)
 {
 	if (is_button_pressed() && !game->player.bullet.active)
 	{
-		game->player.bullet.x = ((2 * GAME_GRID) + game->player.x + ENTITY_WIDTH_PX / 2);
+		game->player.bullet.x = (game->player.x + ENTITY_WIDTH_PX / 2) + (ENTITY_WIDTH_PX / 4);
 		game->player.bullet.y = SPACESHIP_Y;
 		game->player.bullet.dy = -ENTITY_BULLET_SPEED;
 		game->player.bullet.active = true;
@@ -570,7 +570,9 @@ static void move_bullets(game_spcinv_t *game)
 static void spcinv_update(game_spcinv_t *game)
 {
 	if (is_joystick_pressed()) game_pause();
-	if (game_over || current_menu_state != MENU_PLAYING) return;
+	if (game_over_flag || game_win_flag || current_menu_state != MENU_PLAYING) return;
+
+	spcinv_draw(game);
 
 	spaceship_move(game);
 	enemy_move(game);
@@ -578,8 +580,6 @@ static void spcinv_update(game_spcinv_t *game)
 	enemy_fire(game);
 
 	move_bullets(game);
-
-	spcinv_draw(game);
 
 	clear_enemy_count(game);
 

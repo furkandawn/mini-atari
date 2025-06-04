@@ -59,7 +59,7 @@ void game_pong(game_pong_t *game)
 {
 	pong_init(game);
 
-	while(!game_over && current_menu_state == MENU_PLAYING)
+	while(!game_over_flag && !game_win_flag && current_menu_state == MENU_PLAYING)
 	{
 		pong_update(game);
 	}
@@ -295,7 +295,7 @@ static void pong_update(game_pong_t *game)
 	{
 		game_pause();
 
-		if (game_over || current_menu_state != MENU_PLAYING) return;
+		if (game_over_flag || game_win_flag || current_menu_state != MENU_PLAYING) return;
 
 		pong_draw_borders();
 	}

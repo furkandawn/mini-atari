@@ -48,7 +48,7 @@
 
 // PADDLE MACROS
 #define PADDLE_Y ((DISPLAY_HEIGHT - (GAME_GRID * 2)) - (DISPLAY_HEIGHT % GAME_GRID))
-#define PADDLE_LENGTH (6 * GAME_GRID)
+#define PADDLE_LENGTH (4 * GAME_GRID)
 #define PADDLE_X_MIN 0
 #define PADDLE_X_MAX ((DISPLAY_WIDTH - PADDLE_LENGTH) - (DISPLAY_WIDTH % GAME_GRID))
 
@@ -75,7 +75,7 @@ void game_breakout(game_breakout_t *game)
 {
 	breakout_init(game);
 
-	while (!game_over && current_menu_state == MENU_PLAYING)
+	while (!game_over_flag && !game_win_flag && current_menu_state == MENU_PLAYING)
 	{
 		breakout_update(game);
 	}
@@ -148,8 +148,7 @@ static void setup_level(game_breakout_t *game)
 		break;
 
 	default:
-		game_win();
-		game_over = true;
+		game_win_flag = true;
 		set_level = false;
 		break;
 	}
@@ -380,7 +379,7 @@ static void breakout_update(game_breakout_t *game)
 	{
 		game_pause();
 
-		if (game_over || current_menu_state != MENU_PLAYING) return;
+		if (game_over_flag || game_win_flag || current_menu_state != MENU_PLAYING) return;
 
 		breakout_draw_bricks();
 	}

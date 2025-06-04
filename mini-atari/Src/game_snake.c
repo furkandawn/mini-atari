@@ -43,7 +43,7 @@ void snake_game(game_snake_t *game)
 {
 	snake_init(game);
 
-	while(!game_over && current_menu_state == MENU_PLAYING)
+	while(!game_over_flag && !game_win_flag && current_menu_state == MENU_PLAYING)
 	{
 		snake_update(game);
 	}
@@ -156,7 +156,7 @@ static void snake_spawn_food(game_snake_t *game)
 static void snake_update(game_snake_t *game)
 {
 	if (is_joystick_pressed() || is_button_pressed()) game_pause();
-	if (game_over || current_menu_state != MENU_PLAYING) return;
+	if (game_over_flag || game_win_flag || current_menu_state != MENU_PLAYING) return;
 
 	snake_draw(game);
 	snake_move(game);

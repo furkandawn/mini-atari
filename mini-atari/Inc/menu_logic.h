@@ -16,4 +16,6 @@ void navigate_menu_right_left(uint8_t *index, uint8_t max_items, void (*draw_fun
 void navigate_menu_up_down_loop(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t));
 void navigate_menu_right_left_loop(uint8_t *index, uint8_t max_items, void (*draw_func)(uint8_t));
 
+void reset_navigate_menu_draw_flags(void);
+
 #endif /* INC_MENU_LOGIC_H_ */

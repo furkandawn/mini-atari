@@ -71,7 +71,6 @@ void game_draw_level_up_animation(void)
 	input_enabled = true;
 }
 
-// Show remaining lives animation (full -> one less) when player loses. If no lives remaining, return and set game_over true.
 void game_draw_remaining_lives(void)
 {
 	input_enabled = false;
@@ -146,4 +145,22 @@ void game_draw_you_win(void)
 	HAL_Delay(1000);
 
 	input_enabled = true;
+}
+
+void game_draw_game_over(void)
+{
+	char *game_over = "GAME OVER!";
+	char buffer[32];
+	buffer[0] = '\0';
+
+	for (uint8_t i = 0; i < strlen("GAME OVER!"); i++)
+	{
+		buffer[i] = game_over[i];
+		buffer[i + 1] = '\0';
+		display_clear();
+		display_write_centered_string(buffer, display_font_11x18, display_color_white);
+		display_update();
+		HAL_Delay(20);
+	}
+	HAL_Delay(1000);
 }

@@ -79,12 +79,20 @@ void handle_menu_save(void)
 	if (is_letter_focused)
 	{
 		navigate_alphabet();
-		if (is_joystick_pressed() || is_button_pressed()) handle_selected_letter_input();
+		if (is_joystick_pressed() || is_button_pressed())
+		{
+			reset_navigate_menu_draw_flags();
+			handle_selected_letter_input();
+		}
 	}
 	else
 	{
 		navigate_save_action();
-		if (is_joystick_pressed() || is_button_pressed()) handle_current_save_action();
+		if (is_joystick_pressed() || is_button_pressed())
+		{
+			reset_navigate_menu_draw_flags();
+			handle_current_save_action();
+		}
 	}
 }
 

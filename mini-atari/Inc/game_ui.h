@@ -13,5 +13,6 @@ void game_draw_start_screen(void);
 void game_draw_level_up_animation(void);
 void game_draw_remaining_lives(void);
 void game_draw_you_win(void);
+void game_draw_game_over(void);
 
 #endif /* INC_GAME_UI_H_ */

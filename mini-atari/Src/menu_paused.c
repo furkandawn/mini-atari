@@ -110,5 +110,9 @@ static void handle_current_menu_paused_action(void)
 static void handle_menu_paused(void)
 {
 	navigate_menu_paused();
-	if (is_joystick_pressed() || is_button_pressed()) handle_current_menu_paused_action();
+	if (is_joystick_pressed() || is_button_pressed())
+	{
+		reset_navigate_menu_draw_flags();
+		handle_current_menu_paused_action();
+	}
 }

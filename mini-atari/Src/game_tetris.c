@@ -60,7 +60,7 @@ void game_tetris(game_tetris_t *game)
 {
 	tetris_init(game);
 
-	while(!game_over && current_menu_state == MENU_PLAYING)
+	while(!game_over_flag && !game_win_flag && current_menu_state == MENU_PLAYING)
 	{
 		tetris_update(game);
 	}
@@ -311,7 +311,7 @@ static void tetris_clear_line(void)
 static void tetris_update(game_tetris_t *game)
 {
 	if (is_joystick_pressed()) game_pause();
-	if (game_over || current_menu_state != MENU_PLAYING) return;
+	if (game_over_flag || game_win_flag || current_menu_state != MENU_PLAYING) return;
 
 	if (is_button_pressed()) tetrimino_rotate(game);
 

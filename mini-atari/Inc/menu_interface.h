@@ -96,7 +96,7 @@ extern const char *menu_main_items[GAME_COUNT];
 //----//
 
 // ----- menu_gameover ----- //
-extern bool gameover_animation_shown;
+extern bool stats_animation_shown;
 
 // ----- menu_save ----- //
 // ----- //

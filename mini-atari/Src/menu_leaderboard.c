@@ -42,6 +42,7 @@ void handle_menu_leaderboard(void)
 
 	if (is_joystick_pressed() || is_button_pressed())
 	{
+		reset_navigate_menu_draw_flags();
 		handle_menu_leaderboard_action();
 	}
 }

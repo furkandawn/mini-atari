@@ -30,7 +30,8 @@ static bool freeze_timer = false;
 // ===== Public Global Variables ===== //
 uint32_t paused_time;
 game_runtime_t game_runtime = {0};
-bool game_over = false;
+bool game_over_flag = false;
+bool game_win_flag = false;
 
 // ===== Public API Function Definitions ===== //
 
@@ -42,8 +43,9 @@ void game_reset_configs(game_type_t type)
 	game_runtime.score = 0;
 	game_runtime.level = 1;
 	game_runtime.delay_ms = game_configs[type].initial_delay_ms;
-	game_over = false;
-	gameover_animation_shown = false;
+	game_over_flag = false;
+	game_win_flag = false;
+	stats_animation_shown = false;
 	game_runtime.life = game_configs[type].life;
 }
 
@@ -97,7 +99,7 @@ bool game_lose_life(void)
 	if (game_runtime.life <= 1)
 	{
 		game_runtime.life = 0;
-		game_over = true;
+		game_over_flag = true;
 		return false;
 	}
 	else
@@ -109,9 +111,10 @@ bool game_lose_life(void)
 	return false;
 }
 
-void game_win(void)
+void game_end(void)
 {
-	game_draw_you_win();
+	if (game_over_flag)	game_draw_game_over();
+	else if (game_win_flag) game_draw_you_win();
 }
 
 // Getter Functions

@@ -23,7 +23,6 @@
 #include "stm32f0xx_hal.h"
 #include <stdio.h>
 #include <stdbool.h>
-#include "string.h"
 
 // ======= Macros/Constants ===== //
 // ----- //
@@ -39,54 +38,45 @@ static const char *menu_gameover_items[GAMEOVER_COUNT] =
 static gameover_action_t current_gameover_action = GAMEOVER_PLAY_AGAIN;
 
 // ===== Public Global Variables ===== //
-bool gameover_animation_shown = false; // to draw game over screen animated, resets every start up of a game in "game_runtime.c"
+bool stats_animation_shown = false; // to draw game over screen animated, resets every start up of a game in "game_runtime.c"
 
 // ===== Static Function Declarations ===== //
-static void draw_animated_menu_gameover(void);
+static void draw_animated_stats(void);
 static void navigate_menu_gameover(void);
 static void handle_current_gameover_action(void);
 
 // ===== Public API Function Definitions ===== //
 void handle_menu_gameover(void)
 {
-	if (!gameover_animation_shown)
+	if (!stats_animation_shown)
 	{
 		game_get_time_spent();
 
 		input_enabled = false;
 		HAL_Delay(500);
-		draw_animated_menu_gameover();
-		gameover_animation_shown = true;
+		game_end();
+		draw_animated_stats();
+		stats_animation_shown = true;
 		input_enabled = true;
 	}
 
 	navigate_menu_gameover();
-	if(is_joystick_pressed() || is_button_pressed()) handle_current_gameover_action();
+	if (is_joystick_pressed() || is_button_pressed())
+	{
+		reset_navigate_menu_draw_flags();
+		handle_current_gameover_action();
+	}
 }
 
 // ===== Static Function Definitions ===== //
 // Draw Functions
 
-static void draw_animated_menu_gameover(void)
+static void draw_animated_stats(void)
 {
-	char *game_over = "GAME OVER!";
 	char buffer[32];
-	buffer[0] = '\0';
-
-	for (uint8_t i = 0; i < strlen("GAME OVER!"); i++)
-	{
-		buffer[i] = game_over[i];
-		buffer[i + 1] = '\0';
-		display_clear();
-		display_write_centered_string(buffer, display_font_11x18, display_color_white);
-		display_update();
-		HAL_Delay(20);
-	}
-	HAL_Delay(500);
-
+	uint8_t y = 0;
 	display_clear();
 
-	uint8_t y = 0;
 	display_write_horizontal_string(">---YOUR STATS---<",  y, display_font_7x10, display_color_white);
 	display_update();
 	HAL_Delay(1000);
@@ -100,7 +90,7 @@ static void draw_animated_menu_gameover(void)
 	HAL_Delay(1000);
 }
 
-static void draw_menu_gameover(uint8_t current_gameover_action)
+static void draw_stats(uint8_t current_gameover_action)
 {
 	display_clear();
 	uint8_t y = 0;
@@ -120,7 +110,7 @@ static void draw_menu_gameover(uint8_t current_gameover_action)
 
 static void navigate_menu_gameover(void)
 {
-	navigate_menu_up_down(&current_gameover_action, GAMEOVER_COUNT, draw_menu_gameover);
+	navigate_menu_up_down(&current_gameover_action, GAMEOVER_COUNT, draw_stats);
 }
 
 
