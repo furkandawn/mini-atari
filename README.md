@@ -60,14 +60,22 @@ I started this project as a personal challenge to:
       - Game logic
     - Games return to the menu upon completion or loss.
 
-
-🎥Videos
+## 🎥 Videos
     Menu Systems: https://www.youtube.com/watch?v=7HuLqZ83VQw&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=2
-
-GAMES
-    1. Snake Game: https://www.youtube.com/watch?v=1EM2BZiJ4zE&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=3
-    2. Tetris Game: https://www.youtube.com/watch?v=8NXbPQ_SdIY&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=4
-    3. Pong Game: https://www.youtube.com/watch?v=9ESiIYlbD8Q&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=5
-    4. Breakout Game: https://www.youtube.com/watch?v=alcsj3yEftw&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=6
-    5. Space Invaders Game: https://www.youtube.com/watch?v=4ioF6O9ygYc&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=7
+    
+### GAMES
+    1. Snake Game:
+        https://www.youtube.com/watch?v=1EM2BZiJ4zE&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=3
+        
+    2. Tetris Game:
+        https://www.youtube.com/watch?v=8NXbPQ_SdIY&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=4
+        
+    3. Pong Game:
+        https://www.youtube.com/watch?v=9ESiIYlbD8Q&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=5
+        
+    4. Breakout Game:
+        https://www.youtube.com/watch?v=alcsj3yEftw&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=6
+        
+    5. Space Invaders Game:
+        https://www.youtube.com/watch?v=4ioF6O9ygYc&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=7
 
