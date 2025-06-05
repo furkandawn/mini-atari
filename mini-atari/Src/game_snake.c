@@ -24,7 +24,6 @@
 
 // ======= Macros/Constants ===== //
 #define GAME_GRID 4		// 4x4 pixel blocks
-#define speedup_ms 30
 
 // ===== Static File-Private Variables ===== //
 // ----- //
@@ -156,7 +155,7 @@ static void snake_spawn_food(game_snake_t *game)
 
 static void snake_update(game_snake_t *game)
 {
-	if (is_joystick_pressed()) game_pause();
+	if (is_joystick_pressed() || is_button_pressed()) game_pause();
 	if (game_over_flag || game_win_flag || current_menu_state != MENU_PLAYING) return;
 
 	snake_draw(game);
@@ -192,12 +191,5 @@ static void snake_update(game_snake_t *game)
 		}
 	}
 
-	if (is_button_held())
-	{
-		HAL_Delay(speedup_ms);
-	}
-	else
-	{
 		HAL_Delay(game_get_delay_ms());
-	}
 }

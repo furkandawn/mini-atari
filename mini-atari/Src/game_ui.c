@@ -75,6 +75,7 @@ void game_draw_remaining_lives(void)
 {
 	input_enabled = false;
 
+	HAL_Delay(500);
 	display_clear();
 
 	uint8_t gap_between_hearts = 6;
@@ -142,6 +143,7 @@ void game_draw_you_win(void)
 		display_update();
 		HAL_Delay(15);
 	}
+
 	HAL_Delay(1000);
 
 	input_enabled = true;
@@ -149,6 +151,8 @@ void game_draw_you_win(void)
 
 void game_draw_game_over(void)
 {
+	input_enabled = false;
+
 	char *game_over = "GAME OVER!";
 	char buffer[32];
 	buffer[0] = '\0';
@@ -162,5 +166,8 @@ void game_draw_game_over(void)
 		display_update();
 		HAL_Delay(15);
 	}
+
 	HAL_Delay(1000);
+
+	input_enabled = true;
 }

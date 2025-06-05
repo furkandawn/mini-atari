@@ -155,6 +155,8 @@ static void draw_menu_save_alphabet(uint8_t current_menu_save_letter)
 
 static void draw_not_eligible(void)
 {
+	input_enabled = false;
+
 	display_clear(); // clears the OLED screen
 
 	display_write_horizontal_string("you are not", 0, display_font_7x10, display_color_white);
@@ -173,6 +175,8 @@ static void draw_not_eligible(void)
 	display_write_horizontal_string(">> press to exit <<", 54, display_font_6x8, display_color_white);
 
 	display_update(); // Refreshes the OLED screen
+
+	input_enabled = true;
 }
 
 static void navigate_save_action(void)
@@ -214,14 +218,12 @@ static void handle_not_eligible(void)
 {
 	bool drawn_once = false;
 
-	while (!is_joystick_pressed() || is_button_pressed())
+	while (!is_joystick_pressed() && !is_button_pressed())
 	{
 		if (!drawn_once)
 		{
-			input_enabled = false;
 			draw_not_eligible();
 			drawn_once = true;
-			input_enabled = true;
 		}
 	}
 }

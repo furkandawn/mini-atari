@@ -20,7 +20,7 @@
  * Do not change this, or if you change, make it divisible by 4
  * Because the current structure is being written word by word, which is 4 bytes
  */
-typedef struct
+typedef struct __attribute__((packed))
 {
 	char name[MAX_NAME_LENGTH];					// 11 bytes
 	uint16_t score;								// 2 bytes

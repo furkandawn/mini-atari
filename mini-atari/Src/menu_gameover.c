@@ -52,12 +52,9 @@ void handle_menu_gameover(void)
 	{
 		game_get_time_spent();
 
-		input_enabled = false;
-		HAL_Delay(500);
 		game_end();
 		draw_animated_stats();
 		stats_animation_shown = true;
-		input_enabled = true;
 	}
 
 	navigate_menu_gameover();
@@ -73,6 +70,8 @@ void handle_menu_gameover(void)
 
 static void draw_animated_stats(void)
 {
+	input_enabled = false;
+
 	char buffer[32];
 	uint8_t y = 0;
 	display_clear();
@@ -87,7 +86,10 @@ static void draw_animated_stats(void)
 	snprintf(buffer, sizeof(buffer), "Score:%d Time:%ds", game_get_score(), game_get_time_spent());
 	display_write_horizontal_string(buffer, y, display_font_6x8, display_color_white);
 	display_update();
+
 	HAL_Delay(1000);
+
+	input_enabled = true;
 }
 
 static void draw_stats(uint8_t current_gameover_action)

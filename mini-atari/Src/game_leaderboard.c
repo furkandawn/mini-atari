@@ -48,7 +48,7 @@ bool is_entry_empty(const leaderboard_entry_t *entry)
 	const uint8_t *bytes = (const uint8_t *)entry;
 
 	// no names - 0 scores
-	if (entry->name[0] == '\0' || entry->score == 0 || entry->time_passed == 0) return true;
+	if (entry->name[0] == 0xFF || entry->score == 0 || entry->time_passed == 0) return true;
 
 	// since my structure is 16 bytes, i used uint8_t (255 max)
 	for (uint8_t i = 0; i < sizeof(leaderboard_entry_t); i++)
@@ -83,7 +83,6 @@ void load_leaderbord_from_flash(void)
 				memset(&current_leaderboard[g][i], 0, sizeof(leaderboard_entry_t));
 			}
 		}
-
 		update_menu_leaderboard_entries(g);
 	}
 }
