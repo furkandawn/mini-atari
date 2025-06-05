@@ -42,7 +42,7 @@ I started this project as a personal challenge to:
     #### 🧱 Breakout
     - Ball physics based on hit angle
     - Paddle control
-    - Brick collision and score system
+    - Brick collision
     
     #### 👾 Space Invaders
     - Multiple enemy types: Squid, Crab, Octopus, UFO
@@ -61,9 +61,9 @@ I started this project as a personal challenge to:
     - Games return to the menu upon completion or loss.
 
 ## 🎥 Videos
-    Menu Systems: https://www.youtube.com/watch?v=7HuLqZ83VQw&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=2
+    Menu Systems:
+        https://www.youtube.com/watch?v=7HuLqZ83VQw&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=2
     
-### GAMES
     1. Snake Game:
         https://www.youtube.com/watch?v=1EM2BZiJ4zE&list=PLDRjpnp750kDVOImY-O_GNV_q2miwJYLG&index=3
         
